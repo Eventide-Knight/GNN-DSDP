@@ -1,0 +1,14 @@
+{
+ "split": "test",
+ "n_skipped": 0,
+ "wall_seconds": 22.9,
+ "out_dir": "/share/home/huangyy/DSDP/gnn_site/data/graph/test",
+ "n_missing_dssp_last_pass": 1397,
+ "n_complexes": 363,
+ "n_residues": 130222,
+ "n_positives": 7290,
+ "positive_ratio": 0.05598132420021194,
+ "mean_residues": 358.73829201101927,
+ "mean_edges": 6533.641873278237,
+ "mean_missing_dssp": 3.8484848484848486
+}

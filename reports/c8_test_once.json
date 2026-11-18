@@ -1,0 +1,11 @@
+{
+ "rule": "thr0.5/side36/weighted/eps8",
+ "split": "test",
+ "n": 363,
+ "mean_coverage": 0.8891285006762084,
+ "frac_cov_ge_0.9": 0.8209366391184573,
+ "frac_cov_ge_0.5": 0.8953168044077136,
+ "median_centre_error_A": 10.533643225622548,
+ "mean_centre_error_A": 11.524034150332739,
+ "centroid_inside_frac": 0.8980716253443526
+}

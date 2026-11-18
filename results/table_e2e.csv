@@ -1,0 +1,3 @@
+pipeline,n,success,success_rate,rmsd_median,rmsd_mean,mean_box_coverage,box_miss,sampled_but_fail
+GNN box (thr0.5/36A),40,13,0.325,5.715133716248689,11.0027089376749,0.8553723684064888,6,21
+DSDP blind docking (site npy),40,16,0.4,4.584328146450533,7.283063923000855,0.9,4,20

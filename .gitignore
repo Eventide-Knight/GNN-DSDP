@@ -1,0 +1,15 @@
+# ---- 数据（体积大 + 许可禁止再分发）----
+data/
+pdbbind_v2020/
+c2_site/
+structure_index.json
+baseline_dsdp_residue.csv
+
+# ---- 运行产物 ----
+__pycache__/
+*.pyc
+*.log
+*.err
+slurm-*.out
+srun-*.out
+*.npy

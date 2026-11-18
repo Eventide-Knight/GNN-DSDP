@@ -1,0 +1,5 @@
+method,variant,roc_auc,pr_auc,note
+DSDP 3D-CNN,CA voxel,0.8635777334515783,0.32044066204915866,task-book projection: probability of the voxel containing the CA
+DSDP 3D-CNN,3x3x3 neighbourhood max,0.907494591900138,0.4924969699757113,max over the 27 voxels around the CA (tolerance like DSDP's own search)
+"GNN (full 16,379)",raw,0.885280654896724,0.4048895751778154,"per-residue log_softmax head, no post-processing"
+"GNN (full 16,379)",1-hop graph max smoothing,0.8463586485655447,0.24874425047331356,max over self + 10 A graph neighbours (fair-tolerance variant)

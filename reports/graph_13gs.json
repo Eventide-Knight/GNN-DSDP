@@ -1,0 +1,25 @@
+{
+ "num_nodes": 418,
+ "num_edges": 7096,
+ "mean_degree": 16.976076555023923,
+ "min_degree": 7,
+ "max_degree": 31,
+ "isolated_nodes": 0,
+ "edge_dist_min": 3.024911403656006,
+ "edge_dist_max": 9.999613761901855,
+ "edge_weight_min": 0.010000771842896938,
+ "edge_weight_max": 0.10928849130868912,
+ "weights_are_1_over_d2": true,
+ "symmetric": true,
+ "x_shape": [
+  418,
+  46
+ ],
+ "x_finite": true,
+ "feature_dim": 46,
+ "cutoff": 10.0,
+ "positives": 14,
+ "positive_ratio": 0.03349282296650718,
+ "mean_degree_pos": 16.571428571428573,
+ "mean_degree_neg": 16.99009900990099
+}

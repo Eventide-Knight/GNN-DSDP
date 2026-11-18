@@ -1,0 +1,83 @@
+{
+ "pdb": "/share/home/huangyy/DSDP/gnn_site/pdbbind_v2020/refined-set/6qqw/6qqw_protein.pdb",
+ "pdb_id": "6qqw",
+ "n_residues": 411,
+ "prob_min": 1.5467361663468182e-05,
+ "prob_max": 0.9688801765441895,
+ "prob_mean": 0.24083703719695915,
+ "n_prob_gt_0.5": 76,
+ "model_epoch": 92,
+ "csv": "reports/predict_6qqw.csv",
+ "top": [
+  {
+   "chain": "A",
+   "resseq": 85,
+   "icode": "",
+   "resname": "PRO",
+   "prob": 0.9688801765441895
+  },
+  {
+   "chain": "A",
+   "resseq": 86,
+   "icode": "",
+   "resname": "ALA",
+   "prob": 0.9650248885154724
+  },
+  {
+   "chain": "A",
+   "resseq": 84,
+   "icode": "",
+   "resname": "THR",
+   "prob": 0.9562653303146362
+  },
+  {
+   "chain": "A",
+   "resseq": 141,
+   "icode": "",
+   "resname": "GLY",
+   "prob": 0.9056720733642578
+  },
+  {
+   "chain": "A",
+   "resseq": 87,
+   "icode": "",
+   "resname": "GLY",
+   "prob": 0.878084123134613
+  },
+  {
+   "chain": "A",
+   "resseq": 132,
+   "icode": "",
+   "resname": "SER",
+   "prob": 0.8632935881614685
+  },
+  {
+   "chain": "A",
+   "resseq": 131,
+   "icode": "",
+   "resname": "VAL",
+   "prob": 0.8527888059616089
+  },
+  {
+   "chain": "A",
+   "resseq": 210,
+   "icode": "",
+   "resname": "TRP",
+   "prob": 0.844713568687439
+  },
+  {
+   "chain": "A",
+   "resseq": 140,
+   "icode": "",
+   "resname": "GLY",
+   "prob": 0.8402568101882935
+  },
+  {
+   "chain": "A",
+   "resseq": 112,
+   "icode": "",
+   "resname": "GLU",
+   "prob": 0.8397862315177917
+  }
+ ]
+}

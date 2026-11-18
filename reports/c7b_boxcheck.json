@@ -1,0 +1,201 @@
+{
+ "split": "test",
+ "n_complexes_used": 363,
+ "margin_A": 5.0,
+ "model": "best_model.pt",
+ "epoch": 92,
+ "rules": {
+  "thr_0.3": {
+   "n_complexes": 363,
+   "empty_selection": 0,
+   "mean_n_selected": 131.35537190082644,
+   "mean_ligand_coverage": 0.9831251153914606,
+   "frac_coverage_ge_0.9": 0.9586776859504132,
+   "frac_coverage_ge_0.5": 0.9862258953168044,
+   "median_centre_error_A": 12.833023071289062,
+   "mean_centre_error_A": 13.436579524978134,
+   "mean_side_A": [
+    50.79999923706055,
+    51.54999923706055,
+    52.31999969482422
+   ],
+   "median_side_A": [
+    48.56999969482422,
+    49.11000061035156,
+    49.22999954223633
+   ],
+   "frac_all_sides_le_40A": 0.01652892561983471,
+   "fixed30_mean_coverage": 0.8020623561936419,
+   "fixed30_frac_coverage_ge_0.9": 0.6666666666666666,
+   "fixed30_median_centre_error_A": 11.290776252746582
+  },
+  "thr_0.4": {
+   "n_complexes": 363,
+   "empty_selection": 0,
+   "mean_n_selected": 106.3305785123967,
+   "mean_ligand_coverage": 0.9765397704596904,
+   "frac_coverage_ge_0.9": 0.9476584022038568,
+   "frac_coverage_ge_0.5": 0.9834710743801653,
+   "median_centre_error_A": 11.775330543518066,
+   "mean_centre_error_A": 12.968775713739316,
+   "mean_side_A": [
+    47.83000183105469,
+    48.720001220703125,
+    48.77000045776367
+   ],
+   "median_side_A": [
+    46.04999923706055,
+    45.77000045776367,
+    46.380001068115234
+   ],
+   "frac_all_sides_le_40A": 0.0440771349862259,
+   "fixed30_mean_coverage": 0.813577801222924,
+   "fixed30_frac_coverage_ge_0.9": 0.6942148760330579,
+   "fixed30_median_centre_error_A": 10.509400367736816
+  },
+  "thr_0.5": {
+   "n_complexes": 363,
+   "empty_selection": 0,
+   "mean_n_selected": 86.25895316804407,
+   "mean_ligand_coverage": 0.9707623409892454,
+   "frac_coverage_ge_0.9": 0.9393939393939394,
+   "frac_coverage_ge_0.5": 0.9752066115702479,
+   "median_centre_error_A": 11.472668647766113,
+   "mean_centre_error_A": 12.567153664003062,
+   "mean_side_A": [
+    45.40999984741211,
+    46.0099983215332,
+    45.97999954223633
+   ],
+   "median_side_A": [
+    43.56999969482422,
+    42.630001068115234,
+    43.470001220703125
+   ],
+   "frac_all_sides_le_40A": 0.09917355371900827,
+   "fixed30_mean_coverage": 0.8188059567996877,
+   "fixed30_frac_coverage_ge_0.9": 0.7162534435261708,
+   "fixed30_median_centre_error_A": 9.772971153259277
+  },
+  "thr_0.6": {
+   "n_complexes": 363,
+   "empty_selection": 0,
+   "mean_n_selected": 68.01928374655647,
+   "mean_ligand_coverage": 0.9640680690585718,
+   "frac_coverage_ge_0.9": 0.928374655647383,
+   "frac_coverage_ge_0.5": 0.9724517906336089,
+   "median_centre_error_A": 10.949453353881836,
+   "mean_centre_error_A": 12.193622908644768,
+   "mean_side_A": [
+    43.0099983215332,
+    43.09000015258789,
+    43.72999954223633
+   ],
+   "median_side_A": [
+    41.560001373291016,
+    40.0,
+    41.84000015258789
+   ],
+   "frac_all_sides_le_40A": 0.17079889807162535,
+   "fixed30_mean_coverage": 0.8237301500923125,
+   "fixed30_frac_coverage_ge_0.9": 0.721763085399449,
+   "fixed30_median_centre_error_A": 9.12662410736084
+  },
+  "thr_0.7": {
+   "n_complexes": 363,
+   "empty_selection": 0,
+   "mean_n_selected": 50.27548209366391,
+   "mean_ligand_coverage": 0.9484276062088515,
+   "frac_coverage_ge_0.9": 0.9035812672176309,
+   "frac_coverage_ge_0.5": 0.9586776859504132,
+   "median_centre_error_A": 10.075581550598145,
+   "mean_centre_error_A": 11.666205403890164,
+   "mean_side_A": [
+    39.7599983215332,
+    39.599998474121094,
+    40.439998626708984
+   ],
+   "median_side_A": [
+    38.72999954223633,
+    37.900001525878906,
+    39.08000183105469
+   ],
+   "frac_all_sides_le_40A": 0.31129476584022037,
+   "fixed30_mean_coverage": 0.8348371863051502,
+   "fixed30_frac_coverage_ge_0.9": 0.7327823691460055,
+   "fixed30_median_centre_error_A": 8.83545970916748
+  },
+  "top_10": {
+   "n_complexes": 363,
+   "empty_selection": 0,
+   "mean_n_selected": 10.0,
+   "mean_ligand_coverage": 0.8135202922751511,
+   "frac_coverage_ge_0.9": 0.6556473829201102,
+   "frac_coverage_ge_0.5": 0.8484848484848485,
+   "median_centre_error_A": 8.522618293762207,
+   "mean_centre_error_A": 11.106854911842294,
+   "mean_side_A": [
+    28.299999237060547,
+    27.700000762939453,
+    28.540000915527344
+   ],
+   "median_side_A": [
+    25.780000686645508,
+    25.690000534057617,
+    26.389999389648438
+   ],
+   "frac_all_sides_le_40A": 0.790633608815427,
+   "fixed30_mean_coverage": 0.8336013945382598,
+   "fixed30_frac_coverage_ge_0.9": 0.7575757575757576,
+   "fixed30_median_centre_error_A": 8.41075611114502
+  },
+  "top_20": {
+   "n_complexes": 363,
+   "empty_selection": 0,
+   "mean_n_selected": 20.0,
+   "mean_ligand_coverage": 0.9029934025063916,
+   "frac_coverage_ge_0.9": 0.7961432506887053,
+   "frac_coverage_ge_0.5": 0.9338842975206612,
+   "median_centre_error_A": 8.911749839782715,
+   "mean_centre_error_A": 11.201207876944345,
+   "mean_side_A": [
+    33.58000183105469,
+    33.13999938964844,
+    33.84000015258789
+   ],
+   "median_side_A": [
+    31.020000457763672,
+    29.860000610351562,
+    31.170000076293945
+   ],
+   "frac_all_sides_le_40A": 0.6528925619834711,
+   "fixed30_mean_coverage": 0.8292013859982206,
+   "fixed30_frac_coverage_ge_0.9": 0.7382920110192838,
+   "fixed30_median_centre_error_A": 8.282258033752441
+  },
+  "top_30": {
+   "n_complexes": 363,
+   "empty_selection": 0,
+   "mean_n_selected": 30.0,
+   "mean_ligand_coverage": 0.9296230997740954,
+   "frac_coverage_ge_0.9": 0.8484848484848485,
+   "frac_coverage_ge_0.5": 0.953168044077135,
+   "median_centre_error_A": 9.650412559509277,
+   "mean_centre_error_A": 11.605265687319857,
+   "mean_side_A": [
+    36.83000183105469,
+    36.290000915527344,
+    37.06999969482422
+   ],
+   "median_side_A": [
+    35.060001373291016,
+    33.66999816894531,
+    35.130001068115234
+   ],
+   "frac_all_sides_le_40A": 0.5316804407713499,
+   "fixed30_mean_coverage": 0.8295045634486139,
+   "fixed30_frac_coverage_ge_0.9": 0.7355371900826446,
+   "fixed30_median_centre_error_A": 8.27422046661377
+  }
+ }
+}

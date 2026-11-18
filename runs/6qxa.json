@@ -1,0 +1,78 @@
+{
+ "protein_input": "6qxa",
+ "gnn_pdb": "/share/home/huangyy/DSDP/gnn_site/pdbbind_v2020/v2020-other-PL/6qxa/6qxa_protein.pdb",
+ "docking_pdbqt": "/share/home/huangyy/DSDP/test_dataset/PDBBind_time_split_dataset/6qxa/6qxa_protein.pdbqt",
+ "ligand": "/share/home/huangyy/DSDP/test_dataset/PDBBind_time_split_dataset/6qxa/6qxa_ligand.pdbqt",
+ "model": "/share/home/huangyy/DSDP/gnn_site/best_model.pt",
+ "model_epoch": 92,
+ "box": {
+  "box_min": [
+   -54.87699511602407,
+   -46.5157060862958,
+   9.156672808889539
+  ],
+  "box_max": [
+   -18.87699511602407,
+   -10.5157060862958,
+   45.15667280888954
+  ],
+  "box_size": 36.0,
+  "centre": [
+   -36.87699511602407,
+   -28.5157060862958,
+   27.15667280888954
+  ],
+  "n_selected": 116,
+  "n_clusters": 10,
+  "main_cluster_size": 69,
+  "threshold": 0.5,
+  "centre_rule": "weighted",
+  "selection": "threshold"
+ },
+ "docking": {
+  "cmd": [
+   "/share/home/huangyy/DSDP/DSDP_redocking/DSDP",
+   "--ligand",
+   "/share/home/huangyy/DSDP/test_dataset/PDBBind_time_split_dataset/6qxa/6qxa_ligand.pdbqt",
+   "--protein",
+   "/share/home/huangyy/DSDP/test_dataset/PDBBind_time_split_dataset/6qxa/6qxa_protein.pdbqt",
+   "--box_min",
+   "-54.877",
+   "-46.516",
+   "9.157",
+   "--box_max",
+   "-18.877",
+   "-10.516",
+   "45.157",
+   "--exhaustiveness",
+   "384",
+   "--search_depth",
+   "40",
+   "--top_n",
+   "1",
+   "--out",
+   "runs/6qxa_out.pdbqt",
+   "--log",
+   "runs/6qxa_out.log"
+  ],
+  "returncode": 0,
+  "seconds": 1.5,
+  "out": "runs/6qxa_out.pdbqt",
+  "log": "runs/6qxa_out.log"
+ },
+ "timing": {
+  "gnn_seconds": 1.9,
+  "docking_seconds": 1.5,
+  "total_seconds": 3.4
+ },
+ "rmsd": {
+  "n_ref_heavy": 23,
+  "n_pose_heavy": 23,
+  "rmsd": 57.05604274669812,
+  "max_atom_dev": 64.76678214949389,
+  "elements_match": true,
+  "reference": "/share/home/huangyy/DSDP/test_dataset/PDBBind_time_split_dataset/6qxa/6qxa_ligand.pdbqt",
+  "aligned": false
+ },
+ "success_rmsd_lt_2A": false
+}

@@ -1,0 +1,47 @@
+[
+ {
+  "pdb_id": "6g2o",
+  "top20_hits": 4,
+  "n_true_pos": 13,
+  "gnn_rmsd": 0.20392100867193091,
+  "dsdp_rmsd": 0.21032725823239237,
+  "png": "/share/home/huangyy/DSDP/gnn_site/results/viz/6g2o_pocket.png",
+  "pml": "/share/home/huangyy/DSDP/gnn_site/results/viz/6g2o_pocket.pml"
+ },
+ {
+  "pdb_id": "6jao",
+  "top20_hits": 13,
+  "n_true_pos": 24,
+  "gnn_rmsd": 0.20884360697400592,
+  "dsdp_rmsd": 0.22170495474057836,
+  "png": "/share/home/huangyy/DSDP/gnn_site/results/viz/6jao_pocket.png",
+  "pml": "/share/home/huangyy/DSDP/gnn_site/results/viz/6jao_pocket.pml"
+ },
+ {
+  "pdb_id": "6qqw",
+  "top20_hits": 12,
+  "n_true_pos": 20,
+  "gnn_rmsd": null,
+  "dsdp_rmsd": null,
+  "png": "/share/home/huangyy/DSDP/gnn_site/results/viz/6qqw_pocket.png",
+  "pml": "/share/home/huangyy/DSDP/gnn_site/results/viz/6qqw_pocket.pml"
+ },
+ {
+  "pdb_id": "6kqi",
+  "top20_hits": 0,
+  "n_true_pos": 25,
+  "gnn_rmsd": 32.94136727918594,
+  "dsdp_rmsd": 0.7960201700403778,
+  "png": "/share/home/huangyy/DSDP/gnn_site/results/viz/6kqi_pocket.png",
+  "pml": "/share/home/huangyy/DSDP/gnn_site/results/viz/6kqi_pocket.pml"
+ },
+ {
+  "pdb_id": "5zk7",
+  "top20_hits": 0,
+  "n_true_pos": 10,
+  "gnn_rmsd": 32.3934532558233,
+  "dsdp_rmsd": 32.50117817542462,
+  "png": "/share/home/huangyy/DSDP/gnn_site/results/viz/5zk7_pocket.png",
+  "pml": "/share/home/huangyy/DSDP/gnn_site/results/viz/5zk7_pocket.pml"
+ }
+]

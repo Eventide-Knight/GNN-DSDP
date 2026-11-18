@@ -1,0 +1,7 @@
+# label_stat.txt (aggregate over data/label/<split>/*.npz) -- 2026-11-18 19:37:07
+split    proteins   residues   positive   negative     pos%
+train        3000    1350188      58463    1291725    4.33%
+val            10       4952        235       4717    4.75%
+test          363     130222       7290     122932    5.60%
+ALL          3373    1485362      65988    1419374    4.44%
+# pos = residue whose min heavy-atom distance to ligand <= 5.0 A

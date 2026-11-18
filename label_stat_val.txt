@@ -1,0 +1,16 @@
+# label_stat.txt -- 2026-11-18 19:53:35
+split                 : val
+cutoff_angstrom       : 5.00
+complexes_done        : 968
+complexes_skipped     : 0
+residues_total        : 474342
+residues_positive     : 19020
+residues_negative     : 455322
+positive_ratio        : 0.0401
+ligand_source         : {'mol2': 968}
+mean_residues_per_cplx: 490.0
+mean_pos_per_cplx     : 19.65
+wall_seconds          : 92.2
+out_dir               : /share/home/huangyy/DSDP/gnn_site/data/label/val
+residues_min/max      : 36 / 4299
+complexes_with_0_pos  : 0 []

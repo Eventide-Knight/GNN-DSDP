@@ -1,0 +1,2 @@
+pdb_id,stratum,gnn_top20_hits,n_true_pos,n_residues,gnn_rmsd,gnn_success,gnn_coverage,gnn_failure_class,dsdp_rmsd,dsdp_success,dsdp_coverage,dsdp_failure_class
+6qqw,high,12,20,411,0.2307276040544938,True,1.0,success,1.0580631532964544,True,0.4545,success

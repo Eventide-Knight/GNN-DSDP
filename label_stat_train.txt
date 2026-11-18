@@ -1,0 +1,16 @@
+# label_stat.txt -- 2026-11-18 20:27:36
+split                 : train
+cutoff_angstrom       : 5.00
+complexes_done        : 16379
+complexes_skipped     : 0
+residues_total        : 7455426
+residues_positive     : 320781
+residues_negative     : 7134645
+positive_ratio        : 0.0430
+ligand_source         : {'mol2': 16379}
+mean_residues_per_cplx: 455.2
+mean_pos_per_cplx     : 19.58
+wall_seconds          : 1239.9
+out_dir               : /share/home/huangyy/DSDP/gnn_site/data/label/train
+residues_min/max      : 24 / 4720
+complexes_with_0_pos  : 0 []
