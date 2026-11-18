@@ -25,9 +25,9 @@ engine — then compare both pipelines on the PDBBind v2020 time split.
 
 ---
 
-## ⚡ Benchmark 速览（详细结果见 §1）
+## Benchmark 速览（详细结果见 §1）
 
-| 考场 | DSDP 原版 | GNN-DSDP | 谁赢 |
+| 考场 | DSDP 原版 | GNN-DSDP | 更优 |
 |---|---|---|---|
 | 残基级 PR-AUC（test 363，130,222 残基） | **0.4925**（3×3×3 邻域） | 0.4049 | DSDP |
 | 残基级 PR-AUC（单点体素口径） | 0.3204 | **0.4049** | GNN |
@@ -35,10 +35,10 @@ engine — then compare both pipelines on the PDBBind v2020 time split.
 | 模型体积 | 13.84 M / 55.6 MB | **3,570 / 55 KB** | **GNN（参数 3,877× / 体积 995× 小）** |
 | 训练成本 | 未测 | **705 s（12 min）** | GNN 可训练 |
 | 单复合物位点预测耗时 | **0.51 s**（需 GPU） | 1.11 s（纯 CPU） | DSDP 更快 |
-| 端到端瓶颈 | 对接（0.87 s，两条线相同） | 对接（0.87 s） | 打平 |
+| 端到端瓶颈 | 对接（0.87 s，两条线相同） | 对接（0.87 s） | 相近 |
 
-**一句话结论**：GNN 没有超过 DSDP 的位点精度（只在「Cα 单点体素」口径上领先），端到端也略输；
-但它把模型做小了 **3,877 倍**、能**纯 CPU** 推理、**12 分钟**就能重训一遍，整条链路可复现。
+结论：GNN 没有超过 DSDP 的位点精度（只在「Cα 单点体素」口径上领先），端到端也略输；
+但它把模型做小了 **3,877 倍**、能**纯 CPU** 推理、**12 分钟**就能重新训练一遍，整条链路可复现。
 
 **Table of contents** · [1 Benchmark](#1-benchmark重点) · [2 快速开始](#2-快速开始) · [3 方法](#3-方法) ·
 [4 数据准备](#4-数据准备) · [5 环境变量](#5-环境变量) · [6 复现步骤](#6-完整复现步骤) ·
@@ -54,9 +54,9 @@ engine — then compare both pipelines on the PDBBind v2020 time split.
 | 结果表/图/日志（`results/` `reports/` `runs/`） | DSDP 的源码与二进制（需另装，见 §4.3） |
 | 9 篇阶段报告（`docs/`） | 任何人的集群绝对路径（已改为 `scripts/paths.py` + 环境变量） |
 
-**能不能 clone 就跑？** 模型推理可以（§2.1，只需要 Python 环境）；完整复现需要 §4 的三样外部资源。
+模型推理可以直接clone仓库后就跑（§2.1，只需要 Python 环境）；完整复现需要 §4 的三样外部资源。
 
-**验证状态**：代码与数字均来自同一台集群的实际运行，**未在第二台机器上做端到端验证**。
+代码与数字均来自同一台集群的实际运行，**未在第二台机器上做端到端验证**。
 第一次在新机器上跑，先执行 `python scripts/paths.py`，它会告诉你哪个路径不存在。
 
 ---
@@ -98,9 +98,8 @@ engine — then compare both pipelines on the PDBBind v2020 time split.
 - 互补案例：6kqi（GNN 32.94 Å / DSDP 0.80 Å）、6e4v（22.41 / 1.13）、6ffg（18.87 / 0.26）。
 - CSV：`results/table_e2e.csv`、`runs/e2e_benchmark.csv`
 
-### 1.3 时间与资源开销（实测）
+### 1.3 时间与资源开销
 
-> 这一节是**反向结论**：位点预测这一段 GNN 并不比 DSDP 快；真正的差别是模型体积、能否 CPU 部署、以及训练成本。
 > 端到端耗时由对接主导，两条管线共用同一个引擎，所以几乎一样。
 
 ![成本对比：模型规模 / 权重体积 / 单复合物时间分解 / 训练时间](results/fig_cost.png)
@@ -117,23 +116,15 @@ engine — then compare both pipelines on the PDBBind v2020 time split.
 | 端到端单例（位点→盒子→对接） | 需 GPU + 特征化 + 对接 | **1.9–3.4 s**（6qqw 1.9 s、6qxa 3.4 s、1a2b 2.2 s） | `runs/*.json` → `timing.total_seconds` |
 | 推理硬件 | **需要 GPU** | **CPU 即可**（本仓库全部推理/评估都在登录节点 CPU 上完成） | — |
 
-**怎么读这张表**
-
-- GNN 真正的优势是**体积与部署**：模型小 3,877 倍、权重 55 KB、训练 12 分钟、推理不需要 GPU；
-- 但**位点预测这一段 GNN 更慢**：特征化 1.11 s vs DSDP 0.30 s（单核），位点预测合计 1.11 s vs 0.51 s，约慢 2×
-  ——因为 `mkdssp`+`freesasa` 比 DSDP 的原子特征工具重；
-- **端到端由对接主导**（0.87 s/复合物，两条线相同），所以位点预测即使快 10 倍，端到端也省不了多少时间；
-- 追求吞吐时：GNN 的特征化可 16 进程并行（0.069 s/复合物墙钟），而 DSDP 的 3D-CNN 前向必须占 GPU。
-
 CSV：`results/table_cost.csv`；图：`results/fig_cost.png`；生成脚本：`python scripts/make_cost_figure.py`
 
-### 1.4 盒子质量与其它考场
+### 1.4 盒子精度
 
 | 指标 | 值 |
 |---|---|
 | 盒子中心误差（test 363） | 中位 **10.5 Å** / 平均 11.5 Å |
 | 覆盖 ≥90% 配体的复合物 | **82.1%** |
-| DUD-E 102（补充，不进主表） | PR-AUC **0.5326** / ROC-AUC **0.9141** |
+| DUD-E 102 | PR-AUC **0.5326** / ROC-AUC **0.9141** |
 
 ![盒子中心误差分布](results/fig_center_error_hist.png)
 
@@ -150,9 +141,9 @@ CSV：`results/table_cost.csv`；图：`results/fig_cost.png`；生成脚本：`
 
 ## 2. 快速开始
 
-### 2.1 只跑模型：给你的蛋白打分（**不需要任何数据集**）
+### 2.1 只跑模型给蛋白打分（**不需要数据集**）
 
-仓库里带了训练好的 `best_model.pt`（从仓库根自动加载），只要有 Python 环境就能用：
+仓库里带了训练好的 `best_model.pt`从仓库根自动加载，只要有 Python 环境就能用：
 
 ```bash
 git clone <this-repo> && cd gnn-dsdp
@@ -187,7 +178,7 @@ python scripts/residue_to_box.py --protein my_protein.pdb --json box.json
 [box] box_size=36 centre=weighted -> box_min=[-37.635,-2.097,-26.046] box_max=[-1.635,33.903,9.954]
 ```
 
-> `--protein` 既接受 `*.pdb` 路径，也接受 4 位 PDB id（后者需要 §4.1 的结构索引）。
+> `--protein` 既接受 `*.pdb` 路径，也接受 4 位 PDB id，后者需要 §4.1 的结构索引。
 
 ### 2.2 完整跑一遍（需要 PDBBind + DSDP）
 
