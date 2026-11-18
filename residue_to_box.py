@@ -30,8 +30,9 @@ import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import predict as P  # noqa: E402
 import build_dataset as B  # noqa: E402
+import paths  # noqa: E402  (同目录：统一路径配置)
 
-BASE = "/share/home/huangyy/DSDP/gnn_site"
+BASE = paths.GNNSITE_HOME
 DEFAULT_THRESHOLD = 0.5      # chosen on val 968 (box_param_scan.py)
 DEFAULT_BOX_SIZE = 36.0      # chosen on val 968
 DEFAULT_EPS = 8.0

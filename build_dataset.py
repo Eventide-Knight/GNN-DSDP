@@ -28,6 +28,7 @@ from collections import Counter
 
 import numpy as np
 from scipy.spatial import cKDTree
+import paths  # noqa: E402  (同目录：统一路径配置)
 
 AA3 = {
     "ALA", "ARG", "ASN", "ASP", "CYS", "GLN", "GLU", "GLY", "HIS", "ILE",
@@ -282,20 +283,20 @@ def write_summary(base, out_path):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--split", default="test", choices=["train", "val", "test"])
-    ap.add_argument("--index", default="/share/home/huangyy/DSDP/gnn_site/structure_index.json")
+    ap.add_argument("--index", default=paths.INDEX_JSON)
     ap.add_argument("--out-dir", default=None,
                     help="default gnn_site/data/label/<split>")
     ap.add_argument("--cutoff", type=float, default=5.0)
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--offset", type=int, default=0)
     ap.add_argument("--stat-file", default=None)
-    ap.add_argument("--skipped", default="/share/home/huangyy/DSDP/gnn_site/skipped.txt")
+    ap.add_argument("--skipped", default=paths.SKIPPED)
     ap.add_argument("--overwrite", action="store_true")
     ap.add_argument("--summary", action="store_true",
                     help="only aggregate existing data/label/*/*.npz into label_stat.txt")
     args = ap.parse_args()
 
-    base = "/share/home/huangyy/DSDP/gnn_site"
+    base = paths.GNNSITE_HOME
     if args.summary:
         write_summary(base, os.path.join(base, "label_stat.txt"))
         return 0

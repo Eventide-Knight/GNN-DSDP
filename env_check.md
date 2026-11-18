@@ -2,7 +2,7 @@
 
 生成时间：2026-11-18 17:57（Asia/Shanghai）
 执行机：`mgt`（Ubuntu 22.04.5 LTS，kernel 5.15.0-153，Slurm 24.05.3）
-工作根：`/share/home/huangyy/DSDP`
+工作根：`$DSDP_HOME`
 
 **结论：C1 全部验收项通过 ✅（唯一注意点：登录节点无 GPU，必须走 slurm GPU 分区）。**
 
@@ -22,9 +22,9 @@
 
 ## 2. conda 环境（DSDP.yml 已建好，本次未重建）
 
-`conda` 不在非交互 PATH 里，需先 `source /share/home/huangyy/miniconda3/etc/profile.d/conda.sh`。
+`conda` 不在非交互 PATH 里，需先 `source $CONDA_ROOT/etc/profile.d/conda.sh`。
 
-解释器：`/share/home/huangyy/miniconda3/envs/DSDP/bin/python` → **3.9.25**
+解释器：`$PY` → **3.9.25**
 
 | 包 | 版本 | 状态 |
 |---|---|---|
@@ -83,7 +83,7 @@ Makefile 现状：三个 Makefile 有**历史本地改动**（git 中 `M`），`
 ### 4.3 PDBBind v2020 全量结构（本次解包）
 
 原始包：`DataInEquibind/pdbbind_v2020/` 三个 `tar.gz`，解包前 `gzip -t` 三个全部 OK。
-解包位置：`/share/home/huangyy/DSDP/gnn_site/pdbbind_v2020/`（refined 2.7G + general 7.3G，合计约 10G）。
+解包位置：`$GNNSITE_HOME/pdbbind_v2020/`（refined 2.7G + general 7.3G，合计约 10G）。
 
 | 子集 | 4 字符 ID 目录 | protein / mol2 / sdf / pocket |
 |---|---|---|
@@ -109,7 +109,7 @@ Makefile 现状：三个 Makefile 有**历史本地改动**（git 中 `M`），`
 登录节点直接跑 `DSDP_redocking/DSDP` → **Segmentation fault (exit 139)**，因为无 GPU 驱动。改走 slurm：
 
 ```bash
-cd /share/home/huangyy/DSDP/gnn_site
+cd $GNNSITE_HOME
 sbatch smoke_1a2b.sbatch     # -p gpu1 --gres=gpu:1 -t 40min
 ```
 
@@ -151,9 +151,9 @@ python -c "import torch_geometric; from torch_geometric.nn import GCNConv; ..."
 
 ```bash
 # --- 0. 进环境 ---
-source /share/home/huangyy/miniconda3/etc/profile.d/conda.sh
+source $CONDA_ROOT/etc/profile.d/conda.sh
 conda activate DSDP
-cd /share/home/huangyy/DSDP
+cd $DSDP_HOME
 
 # --- 1. 校验依赖 ---
 python -c "import torch, torch_geometric; print(torch.__version__, torch_geometric.__version__)"
@@ -165,9 +165,9 @@ mkdir -p /tmp/dsspt && mkdssp --output-format dssp \
 for d in test_dataset/DSDP_dataset test_dataset/DUD_E_dataset test_dataset/PDBBind_time_split_dataset; do
   echo "$d $(find $d -mindepth 1 -maxdepth 1 -type d | wc -l)"; done
 # 期望 995 / 102 / 363
-wc -l /share/home/huangyy/DataInEquibind/timesplit_no_lig_overlap_train \
-      /share/home/huangyy/DataInEquibind/timesplit_no_lig_overlap_val \
-      /share/home/huangyy/DataInEquibind/timesplit_test    # 16379 / 968 / 363
+wc -l $SPLIT_DIR/timesplit_no_lig_overlap_train \
+      $SPLIT_DIR/timesplit_no_lig_overlap_val \
+      $SPLIT_DIR/timesplit_test    # 16379 / 968 / 363
 
 # --- 3. 重建结构索引（19443，覆盖率 100%） ---
 python gnn_site/collect_structures.py
@@ -189,7 +189,7 @@ python gnn_site/build_dataset.py --split train --limit 3000   # 约 1~2 min
 | `test_dataset` 恢复为 1460 个复合物 | ✅ | 995+102+363 |
 | PDBBind v2020 解包 + 19443 ID 与 train/val/test 100% 对上 | ✅ | 19443；16379/968/363 全命中，missing=0 |
 | DSDP 编译产物可用 | ✅ | 4 个产物可执行、ldd 干净、1a2b 全链路出 pdbqt |
-| NodeCoder 在 `/share/home/huangyy/Nodecoder` | ✅ | featurizer/gcn/graph_generator 齐全 |
+| NodeCoder 在 `$NODECODER_DIR` | ✅ | featurizer/gcn/graph_generator 齐全 |
 | 依赖 freesasa/mkdssp/loguru/PyG 齐 | ✅ | 2.2.1 / 4.5.3 / 0.8.0 / 2.6.1 |
 | `python -c "import torch_geometric"` 不报错 | ✅ | 2.6.1 |
 | 能跑出 `1a2b_out.pdbqt` | ✅ | 4712 B，score -9.63 |

@@ -32,9 +32,10 @@ from mpl_toolkits.mplot3d import Axes3D  # noqa: F401,E402
 
 import model as M  # noqa: E402
 import build_dataset as B  # noqa: E402
+import paths  # noqa: E402  (同目录：统一路径配置)
 
-BASE = "/share/home/huangyy/DSDP/gnn_site"
-REPO_TEST = "/share/home/huangyy/DSDP/test_dataset/PDBBind_time_split_dataset"
+BASE = paths.GNNSITE_HOME
+REPO_TEST = paths.TEST_PDBBIND_DIR
 RUNS = os.path.join(BASE, "runs")
 
 

@@ -2,7 +2,7 @@
 """model.py -- 4-layer GCN for residue-level ligand-site prediction.
 
 Architecture (task book section 3, modelled on
-`/share/home/huangyy/Nodecoder/src/NodeCoder/gcn/NodeCoder.py`):
+`$NODECODER_DIR/src/NodeCoder/gcn/NodeCoder.py`):
 
     x [N,46]
       -> GCNConv(46,38) -> ELU          h1
@@ -30,7 +30,7 @@ checkpoint is written.
 
 Usage:
   python model.py --self-check
-  python model.py --pt /share/home/huangyy/DSDP/gnn_site/data/graph/train/13gs.pt --self-check
+  python model.py --pt $GNNSITE_HOME/data/graph/train/13gs.pt --self-check
   python model.py --head sigmoid --self-check
 """
 import argparse
@@ -44,8 +44,9 @@ import torch.nn.functional as F
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from torch_geometric.nn import GCNConv  # noqa: E402
+import paths  # noqa: E402  (同目录：统一路径配置)
 
-BASE = "/share/home/huangyy/DSDP/gnn_site"
+BASE = paths.GNNSITE_HOME
 DEFAULT_PT = [
     os.path.join(BASE, "data", "graph", "train", "13gs.pt"),
     os.path.join(BASE, "reports", "graph_6qqw.pt"),

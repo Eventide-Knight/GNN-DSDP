@@ -41,11 +41,12 @@ import predict as P  # noqa: E402
 import residue_to_box as RB  # noqa: E402
 import build_dataset as B  # noqa: E402
 import run_gnn_dsdp as R  # noqa: E402
+import paths  # noqa: E402  (同目录：统一路径配置)
 
-BASE = "/share/home/huangyy/DSDP/gnn_site"
-REPO_TEST = "/share/home/huangyy/DSDP/test_dataset/PDBBind_time_split_dataset"
-BLIND_BIN = "/share/home/huangyy/DSDP/DSDP_blind_docking/DSDP"
-REDOCK_BIN = "/share/home/huangyy/DSDP/DSDP_redocking/DSDP"
+BASE = paths.GNNSITE_HOME
+REPO_TEST = paths.TEST_PDBBIND_DIR
+BLIND_BIN = paths.BLIND_BIN
+REDOCK_BIN = paths.REDOCK_BIN
 NPY_DIR = os.path.join(BASE, "c2_site", "npy")
 EXH = 384
 DEPTH = 40

@@ -1,7 +1,7 @@
 # C10 报告：成品对比表 + 端到端成功率 + 可视化 + README
 
 时间：2026-11-18 21:40（Asia/Shanghai）
-产物目录：`/share/home/huangyy/DSDP/gnn_site/results/`（PNG 需在 VS Code Remote 里打开）
+产物目录：`$GNNSITE_HOME/results/`（PNG 需在 VS Code Remote 里打开）
 
 ## 1. 端到端成功率（40 个 test 复合物，两条管线）
 
@@ -24,7 +24,7 @@ RMSD = 重原子、原子顺序一一对应、**不叠合**（同坐标系），
   不是盒子不够大**（盒子覆盖率 0.855 vs 0.900，差距远小于成功率差距 32.5% vs 40.0%）。
 - 互补案例：6kqi（GNN 32.94 Å / DSDP 0.80 Å）、6e4v（22.41 / 1.13）、6ffg（18.87 / 0.26）——DSDP 能救回 GNN 选错口袋的样本。
 
-明细：`/share/home/huangyy/DSDP/gnn_site/runs/c10_e2e.json`、`runs/c10_e2e.csv`（40 行）
+明细：`$GNNSITE_HOME/runs/c10_e2e.json`、`runs/c10_e2e.csv`（40 行）
 
 ## 2. 表 1：残基级（test 363，5 Å 标签）
 
@@ -51,11 +51,11 @@ RMSD = 重原子、原子顺序一一对应、**不叠合**（同坐标系），
 
 | 文件 | 内容 |
 |---|---|
-| `/share/home/huangyy/DSDP/gnn_site/results/fig_table1_auc.png` | 4 种口径的 ROC/PR 柱状图（表 1） |
-| `/share/home/huangyy/DSDP/gnn_site/results/fig_e2e_rmsd.png` | RMSD 箱线图（左）+ 成功率柱状图（右） |
-| `/share/home/huangyy/DSDP/gnn_site/results/fig_center_error_hist.png` | test 363 盒子中心误差直方图（中位 10.5 Å，覆盖≥90% 占 82.1%） |
-| `/share/home/huangyy/DSDP/gnn_site/results/fig_training_curve.png` | 训练曲线（附录，来自 c7b_curve.png） |
-| `/share/home/huangyy/DSDP/gnn_site/results/center_error_test363.csv` | 363 行逐复合物中心误差/覆盖率 |
+| `$GNNSITE_HOME/results/fig_table1_auc.png` | 4 种口径的 ROC/PR 柱状图（表 1） |
+| `$GNNSITE_HOME/results/fig_e2e_rmsd.png` | RMSD 箱线图（左）+ 成功率柱状图（右） |
+| `$GNNSITE_HOME/results/fig_center_error_hist.png` | test 363 盒子中心误差直方图（中位 10.5 Å，覆盖≥90% 占 82.1%） |
+| `$GNNSITE_HOME/results/fig_training_curve.png` | 训练曲线（附录，来自 c7b_curve.png） |
+| `$GNNSITE_HOME/results/center_error_test363.csv` | 363 行逐复合物中心误差/覆盖率 |
 
 ## 5. 代表蛋白可视化（5 个）
 
@@ -74,14 +74,14 @@ RMSD = 重原子、原子顺序一一对应、**不叠合**（同坐标系），
 
 ## 6. 文档
 
-- `/share/home/huangyy/DSDP/gnn_site/README.md`：一句话说明、环境、一键复现全流程、数据切分、
+- `$GNNSITE_HOME/README.md`：一句话说明、环境、一键复现全流程、数据切分、
   两张表 + 图、7 条局限、文件清单、图索引。
-- `/share/home/huangyy/DSDP/gnn_site/plog/ppt_points.md`：一页 PPT 的 8 条要点 + 每条配哪张图。
+- `$GNNSITE_HOME/plog/ppt_points.md`：一页 PPT 的 8 条要点 + 每条配哪张图。
 
 ## 7. 交付清单
 
 ```
-/share/home/huangyy/DSDP/gnn_site/
+$GNNSITE_HOME/
 ├── README.md                       # 主文档（含一键复现）
 ├── results/
 │   ├── table_residue_test363.csv   # 表 1

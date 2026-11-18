@@ -33,9 +33,10 @@ import features as F  # noqa: E402
 import graph as G  # noqa: E402
 import model as M  # noqa: E402
 import run_gnn_dsdp as RD  # noqa: E402
+import paths  # noqa: E402  (同目录：统一路径配置)
 
-BASE = "/share/home/huangyy/DSDP/gnn_site"
-DUD = "/share/home/huangyy/DSDP/test_dataset/DUD_E_dataset"
+BASE = paths.GNNSITE_HOME
+DUD = paths.DUD_E_DIR
 _MODEL = None
 
 

@@ -1,7 +1,7 @@
 # C4 报告：features.py + graph.py（Step 3 的特征/建图部分）
 
 时间：2026-11-18 19:38（Asia/Shanghai）
-环境：`/share/home/huangyy/miniconda3/envs/DSDP/bin/python`（torch 2.8.0+cu128 / PyG 2.6.1 / biopython 1.83 / freesasa 2.2.1 / mkdssp 4.5.3）
+环境：`$PY`（torch 2.8.0+cu128 / PyG 2.6.1 / biopython 1.83 / freesasa 2.2.1 / mkdssp 4.5.3）
 
 ## 1. 交付物
 

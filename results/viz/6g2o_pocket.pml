@@ -1,7 +1,7 @@
 # PyMOL script for 6g2o -- run with: pymol -cq 6g2o_pocket.pml
-load /share/home/huangyy/DSDP/gnn_site/pdbbind_v2020/refined-set/6g2o/6g2o_protein.pdb, prot
-load /share/home/huangyy/DSDP/test_dataset/PDBBind_time_split_dataset/6g2o/6g2o_ligand.pdbqt, lig
-load /share/home/huangyy/DSDP/gnn_site/runs/c10/6g2o_gnn_out.pdbqt, pose
+load $PDBBIND_DIR/refined-set/6g2o/6g2o_protein.pdb, prot
+load $DSDP_HOME/test_dataset/PDBBind_time_split_dataset/6g2o/6g2o_ligand.pdbqt, lig
+load $GNNSITE_HOME/runs/c10/6g2o_gnn_out.pdbqt, pose
 hide everything
 show cartoon, prot
 set cartoon_transparency, 0.35, prot

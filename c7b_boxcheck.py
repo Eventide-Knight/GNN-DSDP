@@ -30,8 +30,9 @@ from torch_geometric.loader import DataLoader  # noqa: E402
 
 import model as M  # noqa: E402
 import build_dataset as B  # noqa: E402
+import paths  # noqa: E402  (同目录：统一路径配置)
 
-BASE = "/share/home/huangyy/DSDP/gnn_site"
+BASE = paths.GNNSITE_HOME
 
 
 def load_split(split):

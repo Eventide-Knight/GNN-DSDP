@@ -6,18 +6,23 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --gres=gpu:1
 #SBATCH -t 4:00:00
-#SBATCH -o /share/home/huangyy/DSDP/gnn_site/reports/c7b_gpu_slurm.out
-#SBATCH -e /share/home/huangyy/DSDP/gnn_site/reports/c7b_gpu_slurm.err
+#SBATCH -o c7b_%j.out
+#SBATCH -e c7b_%j.err
+#
+# 正式训练（全量 16,379）。提交前：  sbatch c7b_train.sbatch
+# 需要事先 conda 环境（见 README「2. 环境」），或用 CONDA_SH / CONDA_ENV 覆盖。
 
-set -x
-source /share/home/huangyy/miniconda3/etc/profile.d/conda.sh
-conda activate DSDP
-cd /share/home/huangyy/DSDP/gnn_site || exit 1
-echo "START $(date) job=$SLURM_JOB_ID node=$SLURMD_NODENAME"
-nvidia-smi -L
-python -c "import torch; print('cuda:', torch.cuda.is_available(), torch.cuda.get_device_name(0) if torch.cuda.is_available() else '')"
+set -e
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$HERE"
+
+source "${CONDA_SH:-$HOME/miniconda3/etc/profile.d/conda.sh}"
+conda activate "${CONDA_ENV:-DSDP}"
+
+echo "START $(date) job=$SLURM_JOB_ID node=$SLURMD_NODENAME dir=$HERE"
+nvidia-smi -L || true
+python -c "import torch;print('cuda:',torch.cuda.is_available())"
+
 python train_full.py --device cuda --epochs 100 --batch-size 32 --patience 15 \
     --seed 0 --weight-mode linear --tag c7b --ckpt-name best_model.pt
-rc=$?
-echo "END $(date) exit=$rc"
-exit $rc
+echo "END $(date) exit=$?"

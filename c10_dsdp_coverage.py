@@ -27,9 +27,10 @@ import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import build_dataset as B  # noqa: E402
+import paths  # noqa: E402  (同目录：统一路径配置)
 
-BASE = "/share/home/huangyy/DSDP/gnn_site"
-REPO_TEST = "/share/home/huangyy/DSDP/test_dataset/PDBBind_time_split_dataset"
+BASE = paths.GNNSITE_HOME
+REPO_TEST = paths.TEST_PDBBIND_DIR
 NPY_DIR = os.path.join(BASE, "c2_site", "npy")
 TOP_POINTS = 200
 SCALE = 2.0

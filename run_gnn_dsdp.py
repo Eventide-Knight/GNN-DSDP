@@ -39,11 +39,12 @@ import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import predict as P  # noqa: E402
 import residue_to_box as R  # noqa: E402
+import paths  # noqa: E402  (同目录：统一路径配置)
 
-BASE = "/share/home/huangyy/DSDP/gnn_site"
-DSDP_BIN = "/share/home/huangyy/DSDP/DSDP_redocking/DSDP"
-REPO_TEST = "/share/home/huangyy/DSDP/test_dataset/PDBBind_time_split_dataset"
-REPO_DSDP = "/share/home/huangyy/DSDP/test_dataset/DSDP_dataset"
+BASE = paths.GNNSITE_HOME
+DSDP_BIN = paths.REDOCK_BIN
+REPO_TEST = paths.TEST_PDBBIND_DIR
+REPO_DSDP = paths.DSDP_DATASET_DIR
 
 AD4_TO_ELEMENT = {
     "A": "C", "C": "C", "N": "N", "NA": "N", "NS": "N", "OA": "O", "O": "O",

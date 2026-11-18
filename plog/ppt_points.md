@@ -1,6 +1,6 @@
 # 一页 PPT 要点（GNN-DSDP demo）
 
-> 用途：组内汇报 1 页；每页配的图都在 `/share/home/huangyy/DSDP/gnn_site/results/`（需 VS Code Remote 打开）。
+> 用途：组内汇报 1 页；每页配的图都在 `$GNNSITE_HOME/results/`（需 VS Code Remote 打开）。
 
 ## 要点 1：做了什么
 

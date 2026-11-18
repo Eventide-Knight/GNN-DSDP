@@ -15,16 +15,17 @@ so the index records that path too when it exists.
 
 Usage:
   python collect_structures.py \
-      --root /share/home/huangyy/DSDP/gnn_site/pdbbind_v2020 \
-      --out  /share/home/huangyy/DSDP/gnn_site/structure_index.json \
-      --split-dir /share/home/huangyy/DataInEquibind \
-      --repo-test /share/home/huangyy/DSDP/test_dataset/PDBBind_time_split_dataset
+      --root $GNNSITE_HOME/pdbbind_v2020 \
+      --out  $GNNSITE_HOME/structure_index.json \
+      --split-dir $SPLIT_DIR \
+      --repo-test $DSDP_HOME/test_dataset/PDBBind_time_split_dataset
 """
 import argparse
 import json
 import os
 import re
 import sys
+import paths  # noqa: E402  (同目录：统一路径配置)
 
 ID_RE = re.compile(r"^[0-9a-z]{4}$")
 SUBSETS = ["refined-set", "v2020-other-PL"]
@@ -72,11 +73,11 @@ def read_split(split_dir, split):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--root", default="/share/home/huangyy/DSDP/gnn_site/pdbbind_v2020")
-    ap.add_argument("--out", default="/share/home/huangyy/DSDP/gnn_site/structure_index.json")
-    ap.add_argument("--split-dir", default="/share/home/huangyy/DataInEquibind")
-    ap.add_argument("--repo-test", default="/share/home/huangyy/DSDP/test_dataset/PDBBind_time_split_dataset")
-    ap.add_argument("--skipped", default="/share/home/huangyy/DSDP/gnn_site/skipped.txt")
+    ap.add_argument("--root", default=paths.GNNSITE_HOME + "/pdbbind_v2020")
+    ap.add_argument("--out", default=paths.INDEX_JSON)
+    ap.add_argument("--split-dir", default=paths.SPLIT_DIR)
+    ap.add_argument("--repo-test", default=paths.TEST_PDBBIND_DIR)
+    ap.add_argument("--skipped", default=paths.SKIPPED)
     args = ap.parse_args()
 
     index = {}

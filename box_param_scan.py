@@ -31,8 +31,9 @@ from torch_geometric.loader import DataLoader  # noqa: E402
 
 import model as M  # noqa: E402
 import build_dataset as B  # noqa: E402
+import paths  # noqa: E402  (同目录：统一路径配置)
 
-BASE = "/share/home/huangyy/DSDP/gnn_site"
+BASE = paths.GNNSITE_HOME
 THRESHOLDS = (0.3, 0.4, 0.5, 0.6, 0.7)
 TOPKS = (10, 20, 30)
 SIDES = (30.0, 33.0, 36.0, 43.0)

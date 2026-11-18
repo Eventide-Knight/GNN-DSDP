@@ -1,8 +1,8 @@
 # C5 / C6 报告：model.py（4 层 GCN）+ train.py（极小数据冒烟）
 
 时间：2026-11-18 19:45（Asia/Shanghai）
-环境：`/share/home/huangyy/miniconda3/envs/DSDP/bin/python`（torch 2.8.0+cu128 / PyG 2.6.1 / sklearn 1.4.0）
-依据：任务书 §3「模型」、§4 Step 4、§7 C5/C6 行；对照 `/share/home/huangyy/Nodecoder/src/NodeCoder/gcn/{NodeCoder.py,NodeCoder_train.py}`
+环境：`$PY`（torch 2.8.0+cu128 / PyG 2.6.1 / sklearn 1.4.0）
+依据：任务书 §3「模型」、§4 Step 4、§7 C5/C6 行；对照 `$NODECODER_DIR/src/NodeCoder/gcn/{NodeCoder.py,NodeCoder_train.py}`
 
 ## C5：模型结构
 

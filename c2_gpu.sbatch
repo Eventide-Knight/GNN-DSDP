@@ -6,16 +6,25 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --gres=gpu:1
 #SBATCH -t 3:00:00
-#SBATCH -o /share/home/huangyy/DSDP/gnn_site/reports/c2_slurm.out
-#SBATCH -e /share/home/huangyy/DSDP/gnn_site/reports/c2_slurm.err
+#SBATCH -o c2_%j.out
+#SBATCH -e c2_%j.err
+#
+# C2 基线：用原版 DSDP 的 3D-CNN（binding_site_model.pth）跑 test 363 的位点预测，
+# 再投影到残基级。需要 DSDP 仓库（默认与本仓库同级，可用 DSDP_HOME 覆盖）。
+# 提交前：  sbatch c2_gpu.sbatch
 
-set -x
-source /share/home/huangyy/miniconda3/etc/profile.d/conda.sh
-conda activate DSDP
-cd /share/home/huangyy/DSDP || exit 1
-echo "START $(date) job=$SLURM_JOB_ID node=$SLURMD_NODENAME"
-nvidia-smi -L
-python gnn_site/c2_baseline.py --device cuda
-rc=$?
-echo "END $(date) exit=$rc"
-exit $rc
+set -e
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$HERE"
+
+source "${CONDA_SH:-$HOME/miniconda3/etc/profile.d/conda.sh}"
+conda activate "${CONDA_ENV:-DSDP}"
+
+export DSDP_HOME="${DSDP_HOME:-$(python -c "import paths;print(paths.DSDP_HOME)")}"
+echo "START $(date) job=$SLURM_JOB_ID node=$SLURMD_NODENAME dsdp=$DSDP_HOME"
+nvidia-smi -L || true
+
+# c2_baseline.py 会 import DSDP_blind_docking.py 里的 DrugSiteMind，所以从 DSDP 根目录跑
+cd "$DSDP_HOME"
+python "$HERE/c2_baseline.py" --device cuda
+echo "END $(date) exit=$?"

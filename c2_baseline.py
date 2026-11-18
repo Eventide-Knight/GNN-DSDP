@@ -38,10 +38,11 @@ import traceback
 import numpy as np
 import torch
 from sklearn.metrics import average_precision_score, roc_auc_score
+import paths  # noqa: E402  (同目录：统一路径配置)
 
-DSDP_DIR = "/share/home/huangyy/DSDP"
+DSDP_DIR = paths.DSDP_HOME
 DSDP_SCRIPT = os.path.join(DSDP_DIR, "DSDP_blind_docking.py")
-BASE = "/share/home/huangyy/DSDP/gnn_site"
+BASE = paths.GNNSITE_HOME
 
 
 def load_dsdp_machinery():
@@ -81,7 +82,7 @@ def project_density(dens, ca, centroid):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--dataset-path",
-                    default="/share/home/huangyy/DSDP/test_dataset/PDBBind_time_split_dataset")
+                    default=paths.TEST_PDBBIND_DIR)
     ap.add_argument("--dataset-name", default="PDBBind_time_split_dataset")
     ap.add_argument("--site-path", default=os.path.join(BASE, "c2_site"))
     ap.add_argument("--model", default=os.path.join(DSDP_DIR, "binding_site_model.pth"))

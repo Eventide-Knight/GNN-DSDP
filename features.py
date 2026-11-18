@@ -39,9 +39,23 @@ import sys
 import tempfile
 
 import numpy as np
+import paths  # noqa: E402  (同目录：统一路径配置)
 
-MKDSSP = os.environ.get("MKDSSP", "/share/home/huangyy/miniconda3/envs/DSDP/bin/mkdssp")
-INDEX_JSON = "/share/home/huangyy/DSDP/gnn_site/structure_index.json"
+MKDSSP = os.environ.get("MKDSSP", paths.MKDSSP)
+INDEX_JSON = paths.INDEX_JSON
+
+_WARNED = set()
+
+
+def _warn_once(tag, message):
+    """只打印一次的警告；GNNSITE_STRICT=1 时直接抛错（防止静默产出坏特征）。"""
+    if os.environ.get("GNNSITE_STRICT"):
+        raise RuntimeError(message)
+    if tag in _WARNED:
+        return
+    _WARNED.add(tag)
+    sys.stderr.write(message + "\n")
+    sys.stderr.flush()
 
 AA_ORDER = "ACDEFGHIKLMNPQRSTVWY"
 AA3 = {
@@ -372,7 +386,11 @@ def residue_features(pdb_path, with_plddt=False, cutoff=10.0, degree=None):
     try:
         dssp_path = run_mkdssp(pdb_path)
         dssp = parse_dssp(dssp_path)
-    except Exception:
+    except Exception as exc:  # noqa: BLE001
+        _warn_once("dssp", "[features] WARNING: mkdssp unavailable or failed (%r).\n"
+                           "  -> DSSP features (15 dims) are ALL ZERO, predictions are degraded.\n"
+                           "  -> fix: conda install -c conda-forge dssp   (or export MKDSSP=/path/to/mkdssp)\n"
+                           "  -> set GNNSITE_STRICT=1 to turn this into a hard error." % (exc,))
         dssp = {}
     n_missing_dssp = 0
     for i, r in enumerate(res):
@@ -391,7 +409,11 @@ def residue_features(pdb_path, with_plddt=False, cutoff=10.0, degree=None):
     # 5) SASA
     try:
         bb, sc = sasa_features(res)
-    except Exception:
+    except Exception as exc:  # noqa: BLE001
+        _warn_once("sasa", "[features] WARNING: freesasa failed (%r).\n"
+                           "  -> SASA features (2 dims) are ALL ZERO, predictions are degraded.\n"
+                           "  -> fix: pip install freesasa  (or conda install -c conda-forge freesasa)"
+                           % (exc,))
         bb = sc = np.zeros(n, dtype=np.float32)
     # freesasa returns NaN for atoms it cannot classify
     X[:, 41] = np.nan_to_num(bb, nan=0.0, posinf=0.0, neginf=0.0)

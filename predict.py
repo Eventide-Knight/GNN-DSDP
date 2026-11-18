@@ -28,8 +28,9 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import features as F  # noqa: E402
 import graph as G  # noqa: E402
 import model as M  # noqa: E402
+import paths  # noqa: E402  (同目录：统一路径配置)
 
-BASE = "/share/home/huangyy/DSDP/gnn_site"
+BASE = paths.GNNSITE_HOME
 DEFAULT_MODEL = os.path.join(BASE, "best_model.pt")
 
 

@@ -17,7 +17,7 @@ It verifies, with assertions and printed evidence:
   4. PR-AUC / ROC-AUC can be computed on the val graphs.
 
 Loss head: 8 -> 2 logits, NLLLoss(weight=[1, neg/pos]).
-Modelled on /share/home/huangyy/Nodecoder/src/NodeCoder/gcn/NodeCoder_train.py
+Modelled on $NODECODER_DIR/src/NodeCoder/gcn/NodeCoder_train.py
 (`weighted_loss` variants: Linear / Logarithmic / Smoothed_Linear / none).
 
 Usage:
@@ -42,8 +42,9 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from torch_geometric.loader import DataLoader  # noqa: E402
 
 import model as M  # noqa: E402
+import paths  # noqa: E402  (同目录：统一路径配置)
 
-BASE = "/share/home/huangyy/DSDP/gnn_site"
+BASE = paths.GNNSITE_HOME
 
 
 def load_graphs(split, limit, offset=0):
