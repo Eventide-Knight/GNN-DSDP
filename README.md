@@ -9,21 +9,39 @@
 per-residue probabilities into a docking box, and hand the box back to DSDP's CUDA docking
 engine — then compare both pipelines on the PDBBind v2020 time split.
 
-> 组内 demo 级别实现：优先"跑通 + 可复现 + 结论诚实"，不追求 SOTA。
 > 代码与数据**都不含** PDBBind 原始结构（许可禁止再分发），拿到数据后按 §4 准备即可。
 
 ![6qqw：蛋白 Cα 骨架（灰）· 晶体配体（绿）· GNN top-20 残基（红）· 对接 pose（蓝三角）](results/viz/6qqw_pocket.png)
 
-| 关键数字 | 值 |
+| 关键信息 | 值 |
 |---|---|
-| 模型规模 | 4 层 GCN，**3,570 参数** |
+| 模型规模 | 4 层 GCN，**3,570 参数** / 权重 **55 KB**（DSDP 3D-CNN：13.84 M / 55.6 MB） |
 | test 363（残基级） | ROC-AUC **0.8853** / PR-AUC **0.4049**（随机 PR≈0.056） |
 | val 968（选模型用） | ROC-AUC **0.9147** / PR-AUC **0.4452** |
 | 端到端对接（n=40） | GNN 盒子 **32.5%** RMSD<2 Å vs DSDP 原版 **40.0%** |
 | 盒子覆盖率（test 363） | 平均 **0.889**，82.1% 复合物覆盖 ≥90% 配体 |
+| 训练成本 | **705 s**（16,379 复合物 × 100 epoch，1×RTX 4090） |
+| 推理硬件 | **CPU 即可**（DSDP 的位点预测需要 GPU） |
 
-**Table of contents** · [1 快速开始](#1-快速开始) · [2 结果](#2-结果) · [3 方法](#3-方法) ·
-[4 数据](#4-数据准备) · [5 环境变量](#5-环境变量) · [6 复现步骤](#6-完整复现步骤) ·
+---
+
+## ⚡ Benchmark 速览（详细结果见 §1）
+
+| 考场 | DSDP 原版 | GNN-DSDP | 谁赢 |
+|---|---|---|---|
+| 残基级 PR-AUC（test 363，130,222 残基） | **0.4925**（3×3×3 邻域） | 0.4049 | DSDP |
+| 残基级 PR-AUC（单点体素口径） | 0.3204 | **0.4049** | GNN |
+| 端到端对接成功率（n=40，RMSD<2 Å） | **40.0%**（16/40） | 32.5%（13/40） | DSDP |
+| 模型体积 | 13.84 M / 55.6 MB | **3,570 / 55 KB** | **GNN（参数 3,877× / 体积 995× 小）** |
+| 训练成本 | 未测 | **705 s（12 min）** | GNN 可训练 |
+| 单复合物位点预测耗时 | **0.51 s**（需 GPU） | 1.11 s（纯 CPU） | DSDP 更快 |
+| 端到端瓶颈 | 对接（0.87 s，两条线相同） | 对接（0.87 s） | 打平 |
+
+**一句话结论**：GNN 没有超过 DSDP 的位点精度（只在「Cα 单点体素」口径上领先），端到端也略输；
+但它把模型做小了 **3,877 倍**、能**纯 CPU** 推理、**12 分钟**就能重训一遍，整条链路可复现。
+
+**Table of contents** · [1 Benchmark](#1-benchmark重点) · [2 快速开始](#2-快速开始) · [3 方法](#3-方法) ·
+[4 数据准备](#4-数据准备) · [5 环境变量](#5-环境变量) · [6 复现步骤](#6-完整复现步骤) ·
 [7 仓库结构](#7-仓库结构) · [8 常见问题](#8-常见问题troubleshooting) · [9 局限](#9-局限) ·
 [10 引用](#10-引用与许可)
 
@@ -31,21 +49,108 @@ engine — then compare both pipelines on the PDBBind v2020 time split.
 
 | 包含 ✅ | 不包含 ❌ |
 |---|---|
-| 全部代码（`scripts/` 20 个脚本）与 slurm 模板 | **任何结构/图数据**（PDBBind 许可禁止再分发） |
+| 全部代码（`scripts/` 21 个脚本）与 slurm 模板 | **任何结构/图数据**（PDBBind 许可禁止再分发） |
 | 训练好的模型 `best_model.pt`（55 KB，3,570 参数） | 中间产物（`data/graph` 约 4.1 GB、`c2_site/`） |
 | 结果表/图/日志（`results/` `reports/` `runs/`） | DSDP 的源码与二进制（需另装，见 §4.3） |
 | 9 篇阶段报告（`docs/`） | 任何人的集群绝对路径（已改为 `scripts/paths.py` + 环境变量） |
 
-**能不能 clone 就跑？** 模型推理可以（§1.1，只需要 Python 环境）；完整复现需要 §4 的三样外部资源。
+**能不能 clone 就跑？** 模型推理可以（§2.1，只需要 Python 环境）；完整复现需要 §4 的三样外部资源。
 
 **验证状态**：代码与数字均来自同一台集群的实际运行，**未在第二台机器上做端到端验证**。
 第一次在新机器上跑，先执行 `python scripts/paths.py`，它会告诉你哪个路径不存在。
 
 ---
 
-## 1. 快速开始
+## 1. Benchmark（重点）
 
-### 1.1 只跑模型：给你的蛋白打分（环境就绪后 <1 分钟，**不需要任何数据集**）
+> 这一节是本仓库的核心。所有数字都可用 §6 的命令复现，原始 json/csv 在 `results/` 与 `runs/`。
+
+### 1.1 残基级位点预测（test 363，5 Å 标签，130,222 残基 / 5.60% 正样本）
+
+| 方法 | 口径 | ROC-AUC | PR-AUC |
+|---|---|---|---|
+| DSDP 3D-CNN | Cα 所在体素 | 0.8636 | 0.3204 |
+| DSDP 3D-CNN | 3×3×3 邻域最大 | **0.9075** | **0.4925** |
+| **GNN（full 16,379）** | 原始概率 | 0.8853 | 0.4049 |
+| GNN | 1-hop 图邻域最大 | 0.8464 | 0.2487 |
+
+![表 1：四种口径的 ROC-AUC / PR-AUC](results/fig_table1_auc.png)
+
+- 随机基线 PR-AUC ≈ 0.056（正样本比例），所以 0.40 / 0.49 都远高于随机。
+- **GNN 只在「Cα 单点体素」口径上领先**（PR 0.405 vs 0.320）；一旦给 DSDP 加上「3×3×3 邻域」容差
+  （体素概率极稀疏，均值 0.0004，邻域最大是在补容差），DSDP 就反超到 0.4925。
+- 反过来给 GNN 加同类容差（1-hop 最大）只会扩散假阳性，PR 掉到 0.2487（GNN 概率本身很密，均值 0.23）。
+- CSV：`results/table_residue_test363.csv`
+
+### 1.2 端到端对接成功率（test 363 分层抽 40 个，同一 DSDP 引擎）
+
+设置：`exhaustiveness 384 / search_depth 40 / top_n 1`，RMSD 用重原子、不叠合、<2 Å 记成功。
+抽样按 GNN top-20 命中率分层（高 ≥12 / 中 5–11 / 低 ≤4）。
+
+| 管线 | n | 成功率 | RMSD 中位 | 盒子覆盖率 | 失败（没罩住 / 罩住没采到） |
+|---|---|---|---|---|---|
+| GNN 盒子（阈值 0.5 / 36 Å） | 40 | **13/40 = 32.5%** | 5.72 Å | 0.855 | 6 / 21 |
+| DSDP 原版 blind docking | 40 | **16/40 = 40.0%** | 4.58 Å | 0.900 | 4 / 20 |
+
+![端到端：RMSD 箱线图 + 成功率](results/fig_e2e_rmsd.png)
+
+- 两条线的**盒子覆盖率只差 0.045，成功率却差 7.5 个百分点** → 主要瓶颈是「口袋选对没有」，不是盒子大小。
+- 互补案例：6kqi（GNN 32.94 Å / DSDP 0.80 Å）、6e4v（22.41 / 1.13）、6ffg（18.87 / 0.26）。
+- CSV：`results/table_e2e.csv`、`runs/e2e_benchmark.csv`
+
+### 1.3 时间与资源开销（实测）
+
+> 这一节是**反向结论**：位点预测这一段 GNN 并不比 DSDP 快；真正的差别是模型体积、能否 CPU 部署、以及训练成本。
+> 端到端耗时由对接主导，两条管线共用同一个引擎，所以几乎一样。
+
+![成本对比：模型规模 / 权重体积 / 单复合物时间分解 / 训练时间](results/fig_cost.png)
+
+| 指标 | DSDP 3D-CNN | GNN-DSDP | 来源 / 测量条件 |
+|---|---|---|---|
+| 参数量 | 13,840,903（13.84 M） | **3,570** | 小 **3,877×** |
+| 权重文件 | 55.6 MB（`binding_site_model.pth`） | **55 KB**（`best_model.pt`） | 小 **995×** |
+| 训练成本 | 未测（本次未自训 3D-CNN） | **705 s / 100 epoch**（16,379 复合物，1×RTX 4090，≈7.05 s/epoch） | `reports/train_full.json` → `wall_seconds` |
+| 结构特征化（单核） | ≈0.30 s/复合物（`protein_feature_tool`+`surface_tool`，363 个共 108.6 s） | ≈1.11 s/复合物（`mkdssp`+`freesasa`；16 进程批量时 **0.069 s/复合物**，16,379 个共 1,132.5 s） | `reports/graph_stat_train.json` → `wall_seconds` |
+| 位点推理（模型前向） | 0.21 s/复合物（GPU；363 个共 77.1 s，含体素→残基投影与落盘） | 前向极小（CPU 上 <0.01 s，被特征化耗时掩盖） | `reports/baseline_metrics.json` → `wall_seconds` |
+| 单蛋白「位点+盒子」（CPU，含特征） | 不支持纯 CPU（3D-CNN 依赖 GPU） | **0.9–1.9 s**（1a2b 178 残基 0.9 s / 6qqw 411 残基 1.2 s / 6qxa 725 残基 1.9 s） | `runs/{1a2b,6qqw,6qxa}.json` → `timing.gnn_seconds` |
+| 对接（同引擎 384×40） | 0.87 s/复合物（均值） | 0.87 s/复合物 | `runs/e2e_benchmark.json` → `wall_seconds`=69.3 s（40 复合物 × 2 管线 = 80 次对接） |
+| 端到端单例（位点→盒子→对接） | 需 GPU + 特征化 + 对接 | **1.9–3.4 s**（6qqw 1.9 s、6qxa 3.4 s、1a2b 2.2 s） | `runs/*.json` → `timing.total_seconds` |
+| 推理硬件 | **需要 GPU** | **CPU 即可**（本仓库全部推理/评估都在登录节点 CPU 上完成） | — |
+
+**怎么读这张表**
+
+- GNN 真正的优势是**体积与部署**：模型小 3,877 倍、权重 55 KB、训练 12 分钟、推理不需要 GPU；
+- 但**位点预测这一段 GNN 更慢**：特征化 1.11 s vs DSDP 0.30 s（单核），位点预测合计 1.11 s vs 0.51 s，约慢 2×
+  ——因为 `mkdssp`+`freesasa` 比 DSDP 的原子特征工具重；
+- **端到端由对接主导**（0.87 s/复合物，两条线相同），所以位点预测即使快 10 倍，端到端也省不了多少时间；
+- 追求吞吐时：GNN 的特征化可 16 进程并行（0.069 s/复合物墙钟），而 DSDP 的 3D-CNN 前向必须占 GPU。
+
+CSV：`results/table_cost.csv`；图：`results/fig_cost.png`；生成脚本：`python scripts/make_cost_figure.py`
+
+### 1.4 盒子质量与其它考场
+
+| 指标 | 值 |
+|---|---|
+| 盒子中心误差（test 363） | 中位 **10.5 Å** / 平均 11.5 Å |
+| 覆盖 ≥90% 配体的复合物 | **82.1%** |
+| DUD-E 102（补充，不进主表） | PR-AUC **0.5326** / ROC-AUC **0.9141** |
+
+![盒子中心误差分布](results/fig_center_error_hist.png)
+
+### 1.5 结论
+
+1. **GNN 没有赢 DSDP**：残基级邻域口径 0.4049 vs 0.4925，端到端 32.5% vs 40.0%（n=40，未做显著性检验）。
+2. **唯一领先的口径**是「Cα 单点体素」（0.4049 vs 0.3204），这个口径对稀疏体素不公平，不能单独作为结论。
+3. **真正可用的优势是成本**：3,570 参数 / 55 KB / 纯 CPU / 12 分钟训练，适合做快速迭代与部署；
+   位点预测本身并不比 DSDP 快（1.11 s vs 0.51 s）。
+4. **失败模式**：40 个里有 6 个盒子完全没罩住配体（如 6kqi、5zk7、6qxa），说明瓶颈在「选口袋」，
+   下一步应把「选口袋」拆成独立分类任务，而不是继续调盒子大小。
+
+---
+
+## 2. 快速开始
+
+### 2.1 只跑模型：给你的蛋白打分（**不需要任何数据集**）
 
 仓库里带了训练好的 `best_model.pt`（从仓库根自动加载），只要有 Python 环境就能用：
 
@@ -55,7 +160,6 @@ conda create -n gnn-dsdp python=3.9 -y && conda activate gnn-dsdp
 pip install -r requirements.txt
 conda install -c conda-forge dssp -y          # 提供 mkdssp（DSSP 二级结构）
 
-# 任意蛋白 PDB 都行（不需要 PDBBind）
 python scripts/predict.py --protein my_protein.pdb --out pred.csv
 head -3 pred.csv
 ```
@@ -85,54 +189,14 @@ python scripts/residue_to_box.py --protein my_protein.pdb --json box.json
 
 > `--protein` 既接受 `*.pdb` 路径，也接受 4 位 PDB id（后者需要 §4.1 的结构索引）。
 
-### 1.2 完整跑一遍（需要 PDBBind + DSDP）
+### 2.2 完整跑一遍（需要 PDBBind + DSDP）
 
 按 §4 准备三样外部资源（PDBBind 结构、EquiBind 切分编号、DSDP 仓库），
-然后照 §6 的 9 条命令逐条执行，或在仓库根目录：
+然后照 §6 的步骤逐条执行，或在仓库根目录：
 
 ```bash
 python scripts/paths.py    # 先看缺什么
 ```
-
----
-
-## 2. 结果
-
-### 2.1 残基级位点预测（test 363，5 Å 标签，130,222 残基 / 5.60% 正样本）
-
-| 方法 | 口径 | ROC-AUC | PR-AUC |
-|---|---|---|---|
-| DSDP 3D-CNN | Cα 所在体素 | 0.8636 | 0.3204 |
-| DSDP 3D-CNN | 3×3×3 邻域最大 | **0.9075** | **0.4925** |
-| **GNN（full 16,379）** | 原始概率 | 0.8853 | 0.4049 |
-| GNN | 1-hop 图邻域最大 | 0.8464 | 0.2487 |
-
-![表 1：四种口径的 ROC-AUC / PR-AUC](results/fig_table1_auc.png)
-
-CSV：`results/table_residue_test363.csv`
-
-### 2.2 端到端对接成功率（test 363 分层抽 40 个，同一 DSDP 引擎）
-
-设置：`exhaustiveness 384 / search_depth 40 / top_n 1`，RMSD 用重原子、不叠合、<2 Å 记成功。
-
-| 管线 | n | 成功率 | RMSD 中位 | 盒子覆盖率 | 失败（没罩住 / 罩住没采到） |
-|---|---|---|---|---|---|
-| GNN 盒子（阈值 0.5 / 36 Å） | 40 | **13/40 = 32.5%** | 5.72 Å | 0.855 | 6 / 21 |
-| DSDP 原版 blind docking | 40 | **16/40 = 40.0%** | 4.58 Å | 0.900 | 4 / 20 |
-
-![端到端：RMSD 箱线图 + 成功率](results/fig_e2e_rmsd.png)
-
-CSV：`results/table_e2e.csv`、`runs/e2e_benchmark.csv`
-
-### 2.3 盒子质量与其它考场
-
-| 指标 | 值 |
-|---|---|
-| 盒子中心误差（test 363） | 中位 **10.5 Å** / 平均 11.5 Å |
-| 覆盖 ≥90% 配体的复合物 | **82.1%** |
-| DUD-E 102（补充，不进主表） | PR-AUC **0.5326** / ROC-AUC **0.9141** |
-
-![盒子中心误差分布](results/fig_center_error_hist.png)
 
 ---
 
@@ -154,9 +218,9 @@ CSV：`results/table_e2e.csv`、`runs/e2e_benchmark.csv`
 
 ## 4. 数据准备
 
-> 本仓库**不含任何结构/图数据**。以下三样都是公开资源，PDBBind 需要注册（学术免费）。
+> 本仓库**不含任何结构/图数据**。以下三样都是公开资源，需要使用者从PDBBind 注册后获取。
 
-### 4.1 PDBBind v2020（约 10 GB）
+### 4.1 PDBBind v2020
 
 - 来源：<https://www.pdbbind-plus.org.cn/> → `Download Data Packages` → **PDBBind v2020**
 - 需要两个 protein-ligand 包 + index，合计 **19,443** 个复合物：
@@ -166,7 +230,7 @@ CSV：`results/table_e2e.csv`、`runs/e2e_benchmark.csv`
 - 解包到 `$PDBBIND_DIR`（默认 `./pdbbind_v2020/`），结构应为
   `refined-set/<id>/<id>_protein.pdb|_ligand.mol2|_ligand.sdf|_pocket.pdb` 与 `v2020-other-PL/<id>/…`
 - 验证：`python scripts/collect_structures.py` 打印 5,316 + 14,127 = 19,443 并核对覆盖率
-- ⚠️ 许可是**禁止再分发**，不要提交到仓库（`.gitignore` 已挡住）
+- 许可是**禁止再分发**，不要提交到仓库（`.gitignore` 已挡住）
 
 ### 4.2 EquiBind time-split 编号（三个文本文件）
 
@@ -208,8 +272,7 @@ cd DSDP && git sparse-checkout add test_dataset   # 测试集默认被 sparse-ch
 | `GNNSITE_STRICT` | 空 | 设为 1 时，缺 mkdssp/freesasa 直接报错而不是降级 |
 
 环境要求：Python 3.9、PyTorch + PyTorch Geometric（见 `requirements.txt`）、
-`mkdssp`（conda-forge `dssp`）、`freesasa`。**训练/对接需要 GPU**；登录节点通常没有 GPU，
-DSDP 的 CUDA 二进制会 `Segmentation fault`，请用 `slurm/*.sbatch` 提交。
+`mkdssp`（conda-forge `dssp`）、`freesasa`。
 
 ---
 
@@ -245,6 +308,7 @@ sbatch slurm/run_docking_examples.sbatch                 # 8b. 端到端 3 个�
 sbatch slurm/benchmark_end2end.sbatch                    # 8c. 40 蛋白两条管线对比
 
 python scripts/make_figures.py                           # 9. 表与图 → results/
+python scripts/make_cost_figure.py                       # 10. 时间成本对比图 → results/fig_cost.png
 python scripts/make_pocket_views.py --ids 6g2o,6jao,6qqw,6kqi,5zk7
 ```
 
@@ -258,10 +322,10 @@ python scripts/make_pocket_views.py --ids 6g2o,6jao,6qqw,6kqi,5zk7
 ```
 gnn-dsdp/
 ├── README.md  LICENSE  requirements.txt  .gitignore  best_model.pt
-├── scripts/    20 个 Python 脚本（paths.py 为统一路径配置）
+├── scripts/    21 个 Python 脚本（paths.py 为统一路径配置）
 ├── slurm/       7 个 slurm 作业模板
 ├── docs/        9 篇阶段报告（环境盘点 / 基线 / 特征 / 训练 / 盒子 / 端到端 / PPT 要点）
-├── results/     两张主表 CSV + 4 张图 + 5 个蛋白可视化（png + pml）
+├── results/     5 张 CSV + 5 张图 + 5 个蛋白可视化（png + pml）
 ├── reports/     训练日志 json、阈值表、盒子参数扫描、数据统计
 └── runs/        端到端逐条结果与样例 pose（pdbqt）
 ```
@@ -277,7 +341,7 @@ gnn-dsdp/
 | `scripts/baseline_dsdp_cnn.py` | DSDP 3D-CNN 基线（体素→残基投影） |
 | `scripts/evaluate_model.py` / `analyze_box_coverage.py` / `scan_box_params.py` | 评估 / 盒子覆盖 / 参数扫描 |
 | `scripts/benchmark_end2end.py` / `analyze_dsdp_boxes.py` / `evaluate_dude.py` | 端到端对比 / DSDP 盒子复算 / DUD-E |
-| `scripts/make_figures.py` / `make_pocket_views.py` | 表与图 / 口袋可视化 |
+| `scripts/make_figures.py` / **`make_cost_figure.py`** / `make_pocket_views.py` | 表与图 / **时间成本图** / 口袋可视化 |
 
 ---
 
@@ -287,10 +351,8 @@ gnn-dsdp/
 |---|---|---|
 | `mkdssp ... FileNotFoundError`，或预测结果明显变差 | 缺 `mkdssp`，DSSP 15 维被静默填 0 | `conda install -c conda-forge dssp`，或 `export MKDSSP=...`；`GNNSITE_STRICT=1` 让它硬报错 |
 | `import freesasa` 失败 | 源码包编译失败 | `conda install -c conda-forge freesasa` |
-| DSDP 二进制在登录节点 `Segmentation fault` | 登录节点无 GPU | 用 `sbatch slurm/*.sbatch` 提交 |
 | DSDP 把 `site/`、`out/` 当复合物 | `--dataset_path` 下每个子目录都会被当成复合物 | 输出目录放到 `dataset_path` 之外 |
 | `python scripts/paths.py` 显示 `SPLIT_DIR NO` | 切分文件名不对 | 注意 test 文件叫 `timesplit_test`，不带 `no_lig_overlap` |
-| GPU 排队很久 | 集群 GPU 常被占满 | `sinfo` 看空闲分区后提交；CPU 也能跑（慢） |
 | `torch` 与 CUDA 版本不匹配 | `requirements.txt` 是 cu128 组合 | 按 pytorch.org 换对应 wheel |
 
 ---
@@ -306,8 +368,9 @@ gnn-dsdp/
 5. **模型很小**：3,570 参数 / 46 维手工特征，无 PLM 嵌入、无 EGNN。
 6. **DUD-E 102** 与 test 363 不同源（正样本 7.1%），只作补充列。
 7. **RMSD 口径**：重原子、不叠合、未做对称原子校正，长链配体可能偏严。
-
-后续可尝试：更强特征（PLM/EGNN）、把"选哪个口袋"当独立分类任务、用 RMSD 而非 AUC 做模型选择。
+8. **时间效率不是优势**：位点预测单复合物 1.11 s（CPU）慢于 DSDP 的 0.51 s（特征化 0.30 + GPU 前向 0.21），
+   约慢 2×；优势在模型体积（3,877× 小）、CPU 可部署与训练成本（12 min），不在速度（详见 §1.3）。
+9. **未在第二台机器上验证**：所有数字来自同一台集群，跨机器复现需按 §4 自备资源。
 
 ---
 

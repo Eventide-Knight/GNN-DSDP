@@ -1,0 +1,12 @@
+metric,system,value
+parameters,DSDP 3D-CNN,13840903
+parameters,GNN-DSDP,3570
+checkpoint_MB,DSDP 3D-CNN,55.6
+checkpoint_MB,GNN-DSDP,0.056
+featurisation_s_per_complex_1core,DSDP 3D-CNN,0.2992
+featurisation_s_per_complex_1core,GNN-DSDP,1.1063
+inference_s_per_complex,DSDP 3D-CNN (GPU),0.2124
+inference_s_per_complex,GNN-DSDP (CPU),0.0
+docking_s_per_complex,both (same engine),0.8662
+training_s,GNN-DSDP (100 epochs),705.2
+training_s,DSDP 3D-CNN,
