@@ -14,7 +14,8 @@
 
 set -e
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd "$HERE"
+REPO="$(cd "$HERE/.." && pwd)"
+cd "$REPO"
 mkdir -p runs/c10_smoke
 
 source "${CONDA_SH:-$HOME/miniconda3/etc/profile.d/conda.sh}"
@@ -22,6 +23,6 @@ conda activate "${CONDA_ENV:-DSDP}"
 
 echo "START $(date) job=$SLURM_JOB_ID node=$SLURMD_NODENAME"
 nvidia-smi -L || true
-python benchmark_end2end.py --ids 6qqw,1a2b --device cuda \
+python scripts/benchmark_end2end.py --ids 6qqw,1a2b --device cuda \
   --json runs/e2e_smoke.json --csv runs/e2e_smoke.csv --outdir runs/c10_smoke
 echo "END $(date) exit=$?"

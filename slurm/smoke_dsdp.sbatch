@@ -15,14 +15,15 @@
 
 set -e
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd "$HERE"
+REPO="$(cd "$HERE/.." && pwd)"
+cd "$REPO"
 
 source "${CONDA_SH:-$HOME/miniconda3/etc/profile.d/conda.sh}"
 conda activate "${CONDA_ENV:-DSDP}"
 
-export DSDP_HOME="${DSDP_HOME:-$(python -c "import paths;print(paths.DSDP_HOME)")}"
-DATA="${GNNSMOKE_DATA:-$HERE/smoke_1a2b/data}"
-OUT="$HERE/smoke_1a2b"
+export DSDP_HOME="${DSDP_HOME:-$(PYTHONPATH="$REPO/scripts" python -c "import paths;print(paths.DSDP_HOME)")}"
+DATA="${GNNSMOKE_DATA:-$REPO/smoke_1a2b/data}"
+OUT="$REPO/smoke_1a2b"
 mkdir -p "$OUT/site" "$OUT/out" "$OUT/log"
 
 echo "START $(date) job=$SLURM_JOB_ID node=$SLURMD_NODENAME"

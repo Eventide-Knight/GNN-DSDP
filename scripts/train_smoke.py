@@ -21,7 +21,7 @@ Modelled on $NODECODER_DIR/src/NodeCoder/gcn/NodeCoder_train_smoke.py
 (`weighted_loss` variants: Linear / Logarithmic / Smoothed_Linear / none).
 
 Usage:
-  python train_smoke.py --train-limit 30 --val-limit 10 --epochs 2 --batch-size 8 \
+  python scripts/train_smoke.py --train-limit 30 --val-limit 10 --epochs 2 --batch-size 8 \
       --lr 0.01 --weight-mode linear --device cpu
 """
 import argparse

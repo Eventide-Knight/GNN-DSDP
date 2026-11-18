@@ -23,12 +23,14 @@ BLIND_BIN      DSDP 盲对接二进制。默认 = $DSDP_HOME/DSDP_blind_docking/
     export DSDP_HOME=$HOME/code/DSDP
     export PDBBIND_DIR=/data/PDBBind_v2020
     export SPLIT_DIR=/data/equibind_split
-    python paths.py            # 打印当前解析结果与存在性
+    python scripts/paths.py            # 打印当前解析结果与存在性
 """
 import os
 import shutil
 
-HOME_DIR = os.path.dirname(os.path.abspath(__file__))
+_SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+# 脚本放在 <repo>/scripts/ 下时，仓库根是上一级；单独拷出来跑时就用脚本所在目录
+REPO_ROOT = os.path.dirname(_SCRIPT_DIR) if os.path.basename(_SCRIPT_DIR) == "scripts" else _SCRIPT_DIR
 
 
 def _p(env_name, default):
@@ -39,11 +41,11 @@ def _p(env_name, default):
     return os.path.abspath(os.path.expanduser(default))
 
 
-GNNSITE_HOME = _p("GNNSITE_HOME", HOME_DIR)
-DSDP_HOME = _p("DSDP_HOME", os.path.join(os.path.dirname(HOME_DIR), "DSDP"))
+GNNSITE_HOME = _p("GNNSITE_HOME", REPO_ROOT)
+DSDP_HOME = _p("DSDP_HOME", os.path.join(os.path.dirname(REPO_ROOT), "DSDP"))
 SPLIT_DIR = _p("SPLIT_DIR", os.path.join(GNNSITE_HOME, "splits"))
 PDBBIND_DIR = _p("PDBBIND_DIR", os.path.join(GNNSITE_HOME, "pdbbind_v2020"))
-NODECODER_DIR = _p("NODECODER_DIR", os.path.join(os.path.dirname(HOME_DIR), "Nodecoder"))
+NODECODER_DIR = _p("NODECODER_DIR", os.path.join(os.path.dirname(REPO_ROOT), "Nodecoder"))
 
 # 派生路径
 DATA_DIR = os.path.join(GNNSITE_HOME, "data")

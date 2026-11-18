@@ -11,7 +11,7 @@ and writes a companion .pml script that reproduces the same view in PyMOL
 (`pymol -cq <id>.pml`) for anyone who has PyMOL installed.
 
 Usage:
-  python make_pocket_views.py --ids 6g2o,6jao,6kqi,5zk7 --outdir results/viz
+  python scripts/make_pocket_views.py --ids 6g2o,6jao,6kqi,5zk7 --outdir results/viz
 """
 import argparse
 import glob

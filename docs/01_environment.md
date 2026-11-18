@@ -91,7 +91,7 @@ Makefile 现状：三个 Makefile 有**历史本地改动**（git 中 `M`），`
 | `v2020-other-PL/` | **14127** | 14127 / 14127 / 14127 / 14127 ✅ |
 | **合计** | **19443** ✅ | 与任务书一致 |
 
-索引与覆盖率（`gnn_site/structure_index.json`，由 `collect_structures.py` 生成）：
+索引与覆盖率（`gnn_site/structure_index.json`，由 `scripts/collect_structures.py` 生成）：
 
 | split | 需要的 ID | 命中 | 缺失 |
 |---|---|---|---|
@@ -110,7 +110,7 @@ Makefile 现状：三个 Makefile 有**历史本地改动**（git 中 `M`），`
 
 ```bash
 cd $GNNSITE_HOME
-sbatch smoke_dsdp.sbatch     # -p gpu1 --gres=gpu:1 -t 40min
+sbatch slurm/smoke_dsdp.sbatch     # -p gpu1 --gres=gpu:1 -t 40min
 ```
 
 作业 159677 在 cn1（RTX 4090）成功，耗时约 **11 s**：
@@ -173,7 +173,7 @@ wc -l $SPLIT_DIR/timesplit_no_lig_overlap_train \
 python gnn_site/collect_structures.py
 
 # --- 4. 冒烟：1a2b blind docking（必须上 GPU 节点） ---
-cd gnn_site && sbatch smoke_dsdp.sbatch
+cd gnn_site && sbatch slurm/smoke_dsdp.sbatch
 # 产出 smoke_1a2b/out/1a2b_out.pdbqt
 
 # --- 5. 残基级 5 Å 标签（test 363 全量，约 12 s） ---

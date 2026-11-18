@@ -15,7 +15,7 @@ the largest (n_residues * sum(prob)), then build the box and clip its centre so
 the box stays inside the protein CA bounding box.
 
 Usage:
-  python scan_box_params.py --model best_model.pt --split val
+  python scripts/scan_box_params.py --model best_model.pt --split val
 """
 import argparse
 import glob

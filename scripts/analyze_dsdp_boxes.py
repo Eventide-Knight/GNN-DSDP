@@ -15,7 +15,7 @@ This script recomputes dsdp.coverage / dsdp.failure_class for the rows already
 produced by benchmark_end2end.py (no docking involved) and refreshes the summaries.
 
 Usage:
-  python analyze_dsdp_boxes.py --json runs/e2e_benchmark.json --csv runs/e2e_benchmark.csv
+  python scripts/analyze_dsdp_boxes.py --json runs/e2e_benchmark.json --csv runs/e2e_benchmark.csv
 """
 import argparse
 import csv

@@ -15,16 +15,17 @@
 
 set -e
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd "$HERE"
+REPO="$(cd "$HERE/.." && pwd)"
+cd "$REPO"
 
 source "${CONDA_SH:-$HOME/miniconda3/etc/profile.d/conda.sh}"
 conda activate "${CONDA_ENV:-DSDP}"
 
-export DSDP_HOME="${DSDP_HOME:-$(python -c "import paths;print(paths.DSDP_HOME)")}"
+export DSDP_HOME="${DSDP_HOME:-$(PYTHONPATH="$REPO/scripts" python -c "import paths;print(paths.DSDP_HOME)")}"
 echo "START $(date) job=$SLURM_JOB_ID node=$SLURMD_NODENAME dsdp=$DSDP_HOME"
 nvidia-smi -L || true
 
 # baseline_dsdp_cnn.py 会 import DSDP_blind_docking.py 里的 DrugSiteMind，所以从 DSDP 根目录跑
 cd "$DSDP_HOME"
-python "$HERE/baseline_dsdp_cnn.py" --device cuda
+python "$REPO/scripts/baseline_dsdp_cnn.py" --device cuda
 echo "END $(date) exit=$?"

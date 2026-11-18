@@ -11,7 +11,7 @@ Outputs (all under gnn_site/results/):
   c7b_curve.png               copy of the training curve (appendix)
 
 Usage:
-  python make_figures.py
+  python scripts/make_figures.py
 """
 import csv
 import glob

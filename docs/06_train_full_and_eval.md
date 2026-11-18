@@ -105,9 +105,9 @@ top-k 残基（每个蛋白取概率最高的 k 个）：
 ## 5. predict.py
 
 ```bash
-python predict.py --protein 6qqw                     # 输出 reports/predict_6qqw.csv + top-10
-python predict.py --protein 6qqw --out my.csv --topk 20
-python predict.py --protein /path/to/x_protein.pdb --model best_model.pt
+python scripts/predict.py --protein 6qqw                     # 输出 reports/predict_6qqw.csv + top-10
+python scripts/predict.py --protein 6qqw --out my.csv --topk 20
+python scripts/predict.py --protein /path/to/x_protein.pdb --model best_model.pt
 ```
 
 - 用最终 `best_model.pt`（epoch 92）；CSV 列：`rank,chain,resseq,icode,resname,ca_x,ca_y,ca_z,prob`，按概率降序。
@@ -128,7 +128,7 @@ python predict.py --protein /path/to/x_protein.pdb --model best_model.pt
 | `gnn_site/reports/threshold_val.csv` / `topk_val.csv` | 阈值/top-k 明细 |
 | `gnn_site/reports/box_coverage.json` | 盒子覆盖分析 |
 | `gnn_site/reports/predict_6qqw.csv` / `.json` | predict.py 验证产物 |
-| `docs/02_baseline_dsdp.md` / `baseline_dsdp_cnn.py` / `baseline_dsdp_residue.csv` | C2 基线（见那份报告） |
+| `docs/02_baseline_dsdp.md` / `scripts/baseline_dsdp_cnn.py` / `baseline_dsdp_residue.csv` | C2 基线（见那份报告） |
 
 ## 7. 与 C2 基线的对比（同一 test 363、同一 5 Å 标签）
 
@@ -142,4 +142,4 @@ python predict.py --protein /path/to/x_protein.pdb --model best_model.pt
 
 ## 8. 下一步
 
-**C8**：按阈值 0.6 选残基 → 聚类 → 盒子（钳到 30 Å）→ `residue_to_box.py` 冒烟。
+**C8**：按阈值 0.6 选残基 → 聚类 → 盒子（钳到 30 Å）→ `scripts/residue_to_box.py` 冒烟。

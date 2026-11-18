@@ -25,9 +25,9 @@ Residue ordering / filtering is identical to build_dataset.py so features and
 labels line up row by row.
 
 Usage:
-  python features.py --id 6qqw --split test
-  python features.py --protein /path/to/x_protein.pdb --out-npz /tmp/x.npz
-  python features.py --id 6qqw --split test --self-check
+  python scripts/features.py --id 6qqw --split test
+  python scripts/features.py --protein /path/to/x_protein.pdb --out-npz /tmp/x.npz
+  python scripts/features.py --id 6qqw --split test --self-check
 """
 import argparse
 import json

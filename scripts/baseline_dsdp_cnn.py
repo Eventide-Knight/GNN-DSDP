@@ -26,7 +26,7 @@ DSDP_blind_docking.py (source executed up to the `if __name__` guard), so the
 features/model are exactly the shipped ones. Must run on a GPU node (CUDA).
 
 Usage:
-  python baseline_dsdp_cnn.py --limit 0 --device cuda
+  python scripts/baseline_dsdp_cnn.py --limit 0 --device cuda
 """
 import argparse
 import json

@@ -14,7 +14,7 @@ the DSDP evaluation conformer from the repo
 so the index records that path too when it exists.
 
 Usage:
-  python collect_structures.py \
+  python scripts/collect_structures.py \
       --root $GNNSITE_HOME/pdbbind_v2020 \
       --out  $GNNSITE_HOME/structure_index.json \
       --split-dir $SPLIT_DIR \

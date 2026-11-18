@@ -6,10 +6,10 @@ Uses the final full-data model (gnn_site/best_model.pt by default), the same
 training.
 
 Usage:
-  python predict.py --protein 6qqw
-  python predict.py --protein 6qqw --out reports/predict_6qqw.csv
-  python predict.py --protein /abs/path/x_protein.pdb --model best_model.pt
-  python predict.py --protein 6qqw --topk 15 --json reports/predict_6qqw.json
+  python scripts/predict.py --protein 6qqw
+  python scripts/predict.py --protein 6qqw --out reports/predict_6qqw.csv
+  python scripts/predict.py --protein /abs/path/x_protein.pdb --model best_model.pt
+  python scripts/predict.py --protein 6qqw --topk 15 --json reports/predict_6qqw.json
 
 Output CSV columns:
   rank,chain,resseq,icode,resname,ca_x,ca_y,ca_z,prob

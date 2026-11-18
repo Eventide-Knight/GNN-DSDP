@@ -13,10 +13,10 @@ Output: one .npz per complex in data/label/<split>/<id>.npz holding
 plus an aggregate reports/label_stat.txt and reports/skipped.txt.
 
 Usage:
-  python build_dataset.py --split test --limit 5          # smoke
-  python build_dataset.py --split test                    # all 363
-  python build_dataset.py --split val  --limit 50
-  python build_dataset.py --split train --limit 3000
+  python scripts/build_dataset.py --split test --limit 5          # smoke
+  python scripts/build_dataset.py --split test                    # all 363
+  python scripts/build_dataset.py --split val  --limit 50
+  python scripts/build_dataset.py --split train --limit 3000
 """
 import argparse
 import json

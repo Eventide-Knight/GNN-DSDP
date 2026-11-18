@@ -11,8 +11,8 @@ Smoke gate: aa2ar + abl1 must featurise and align before the full 102 run.
 Output: gnn_site/reports/eval_dude.json + gnn_site/results/table_dude102.csv
 
 Usage:
-  python evaluate_dude.py --workers 8
-  python evaluate_dude.py --ids aa2ar,abl1 --no-write     # smoke
+  python scripts/evaluate_dude.py --workers 8
+  python scripts/evaluate_dude.py --ids aa2ar,abl1 --no-write     # smoke
 """
 import argparse
 import csv

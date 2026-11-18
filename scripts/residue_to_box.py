@@ -16,9 +16,9 @@ Flow (task book section 3 "residue -> box"):
      max deviation 0.0000 A on 6qqw).
 
 Usage:
-  python residue_to_box.py --protein 6qqw
-  python residue_to_box.py --protein 6qqw --ligand <id>_ligand.pdbqt --json reports/box_6qqw.json
-  python residue_to_box.py --protein 6qqw --threshold 0.6 --box-size 30
+  python scripts/residue_to_box.py --protein 6qqw
+  python scripts/residue_to_box.py --protein 6qqw --ligand <id>_ligand.pdbqt --json reports/box_6qqw.json
+  python scripts/residue_to_box.py --protein 6qqw --threshold 0.6 --box-size 30
 """
 import argparse
 import json

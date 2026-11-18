@@ -18,8 +18,8 @@ Failure classes: box_miss (ligand coverage < 0.5), sampled_but_fail
 (coverage >= 0.5 but RMSD >= 2), error.
 
 Usage (GPU node):
-  python benchmark_end2end.py --n 40 --json runs/e2e_benchmark.json
-  python benchmark_end2end.py --ids 6qqw,1a2b --json runs/e2e_smoke.json
+  python scripts/benchmark_end2end.py --n 40 --json runs/e2e_benchmark.json
+  python scripts/benchmark_end2end.py --ids 6qqw,1a2b --json runs/e2e_smoke.json
 """
 import argparse
 import csv

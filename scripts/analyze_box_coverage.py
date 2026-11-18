@@ -14,7 +14,7 @@ of the selected residues' CA atoms (+ margin) and ask:
 This is analysis only; it does not build boxes for docking (that is C8).
 
 Usage:
-  python analyze_box_coverage.py --model best_model.pt --split test
+  python scripts/analyze_box_coverage.py --model best_model.pt --split test
 """
 import argparse
 import glob

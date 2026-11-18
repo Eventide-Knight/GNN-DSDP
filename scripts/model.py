@@ -29,9 +29,9 @@ per-layer shapes, parameter count, finiteness. Nothing is trained and no
 checkpoint is written.
 
 Usage:
-  python model.py --self-check
-  python model.py --pt $GNNSITE_HOME/data/graph/train/13gs.pt --self-check
-  python model.py --head sigmoid --self-check
+  python scripts/model.py --self-check
+  python scripts/model.py --pt $GNNSITE_HOME/data/graph/train/13gs.pt --self-check
+  python scripts/model.py --head sigmoid --self-check
 """
 import argparse
 import os

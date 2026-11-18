@@ -9,7 +9,7 @@
     centroid) and the true ligand heavy-atom centroid.
 
 Usage:
-  python evaluate_model.py --model gnn_site/best_model.pt --device cuda
+  python scripts/evaluate_model.py --model gnn_site/best_model.pt --device cuda
 """
 import argparse
 import csv

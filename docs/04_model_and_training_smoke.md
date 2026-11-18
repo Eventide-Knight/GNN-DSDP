@@ -19,7 +19,7 @@
 | — | log_softmax(dim=1) | [418, 2] | — |
 | | **合计** | | **3,570** |
 
-边权重用的是 `graph.py` 的 `edge_weight = 1/d²`（GCNConv 原生支持）。
+边权重用的是 `scripts/graph.py` 的 `edge_weight = 1/d²`（GCNConv 原生支持）。
 
 ### 为什么选 8 → 2 + log_softmax（而不是 8 → 1 + sigmoid）
 
@@ -29,7 +29,7 @@
 4. 仍保留 `--head sigmoid`（8→1 + sigmoid），实测同一套特征/图也能跑通：
 
 ```
-python model.py --head sigmoid --self-check
+python scripts/model.py --head sigmoid --self-check
   output sigmoid  [411, 1]  finite=True   p(pos) min/max/mean = 0.0056 / 0.4466 / 0.0764
   RESULT: PASS
 ```
@@ -50,7 +50,7 @@ python model.py --head sigmoid --self-check
 `gnn_site/train_smoke.py`，命令：
 
 ```bash
-python train_smoke.py --train-limit 30 --val-limit 10 --epochs 2 --batch-size 8 \
+python scripts/train_smoke.py --train-limit 30 --val-limit 10 --epochs 2 --batch-size 8 \
                 --lr 0.01 --weight-mode linear --device cpu
 ```
 

@@ -15,10 +15,10 @@ Differences from the C6 smoke script (train_smoke.py):
 Test split is NEVER touched here (C7b uses it).
 
 Usage (GPU):
-  python train_full.py --device cuda --epochs 100 --batch-size 32 \
+  python scripts/train_full.py --device cuda --epochs 100 --batch-size 32 \
       --patience 15 --seed 0 --tag c7a
 Usage (CPU fallback):
-  python train_full.py --device cpu --epochs 60 --batch-size 16 \
+  python scripts/train_full.py --device cpu --epochs 60 --batch-size 16 \
       --patience 12 --seed 0 --tag c7a_cpu
 """
 import argparse

@@ -17,9 +17,9 @@ Data fields:
   pdb_id, split, num_nodes
 
 Usage:
-  python graph.py --id 6qqw --split test --self-check
-  python graph.py --protein /path/x_protein.pdb --labels /path/x.npz
-  python graph.py --batch --split train --limit 3000 --workers 16
+  python scripts/graph.py --id 6qqw --split test --self-check
+  python scripts/graph.py --protein /path/x_protein.pdb --labels /path/x.npz
+  python scripts/graph.py --batch --split train --limit 3000 --workers 16
 """
 import argparse
 import glob

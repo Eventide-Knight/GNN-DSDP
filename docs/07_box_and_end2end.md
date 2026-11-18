@@ -6,7 +6,7 @@
 
 ## 0. 盒子参数在 val 968 上定（不用 test 调参）
 
-`scan_box_params.py` 在 val 968 上扫：阈值 {0.3,0.4,0.5,0.6,0.7}、top-k {10,20,30} × 盒边长 {30,33,36,43} Å × 中心 {质心, 概率加权质心}，指标 = **真实配体重原子被盒子包住的百分比**（比 AUC 更贴近对接成败）。
+`scripts/scan_box_params.py` 在 val 968 上扫：阈值 {0.3,0.4,0.5,0.6,0.7}、top-k {10,20,30} × 盒边长 {30,33,36,43} Å × 中心 {质心, 概率加权质心}，指标 = **真实配体重原子被盒子包住的百分比**（比 AUC 更贴近对接成败）。
 
 决策规则（**看数据前就写死**）：盒边长 ≤ 36 Å，先最大化"覆盖 ≥90% 的复合物比例"，再比平均覆盖。val 结果（加权质心）：
 
@@ -28,7 +28,7 @@
 ## 1. C8：`gnn_site/residue_to_box.py`
 
 流程（严格按任务书 §3）：
-1. 复用 `predict.py` 的 `load_model` / `predict_one` 得每残基概率（没有重写模型代码）；
+1. 复用 `scripts/predict.py` 的 `load_model` / `predict_one` 得每残基概率（没有重写模型代码）；
 2. 选残基：`p ≥ 0.5`；若选中 <5 个则退回 top-20；`--topk` 可整体覆盖；
 3. 单链接聚类（Cα ≤ 8 Å），主口袋 = `残基数 × 概率和` 最大的簇；
 4. 中心 = 主簇的**概率加权 Cα 质心**；边长 36 Å；中心会平移以把盒子限制在蛋白 Cα 包围盒内（不会悬空）；
@@ -64,7 +64,7 @@
 ## 2. C9：`gnn_site/run_gnn_dsdp.py` 端到端
 
 ```
-python run_gnn_dsdp.py --protein <pdb|pdbqt|id> --ligand <pdbqt> --out runs/<id>_out.pdbqt
+python scripts/run_gnn_dsdp.py --protein <pdb|pdbqt|id> --ligand <pdbqt> --out runs/<id>_out.pdbqt
 ```
 1. GNN → 盒子；2. 调现成 `./DSDP_redocking/DSDP --box_min/--box_max --exhaustiveness 384 --search_depth 40 --top_n 1`（GPU 节点）；3. 预测 pose vs 晶体配体（重原子、**不叠合**、同坐标系）算 RMSD，<2 Å 记成功。
 

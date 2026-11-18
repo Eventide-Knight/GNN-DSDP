@@ -15,14 +15,14 @@
 | 全部代码（19 个脚本）、slurm 提交脚本 | **任何结构/图数据**（PDBBind 许可禁止再分发） |
 | 训练好的模型 `best_model.pt`（55 KB） | 中间产物（`data/graph` 4.1 GB、`c2_site` 等） |
 | 所有结果表/图/日志（`results/`、`reports/`、`runs/`） | DSDP 的源码与二进制（需另装，见 §3.3） |
-| 各阶段实验报告（`docs/`） | 别人集群的绝对路径（已全部改为 `paths.py` + 环境变量） |
+| 各阶段实验报告（`docs/`） | 别人集群的绝对路径（已全部改为 `scripts/paths.py` + 环境变量） |
 
-**换机器能不能直接跑？** 代码层面可以（路径全部由 `paths.py` 解析、默认相对仓库自身），
+**换机器能不能直接跑？** 代码层面可以（路径全部由 `scripts/paths.py` 解析、默认相对仓库自身），
 但有 4 样外部东西必须先准备好：**PDBBind 结构、EquiBind 切分编号、DSDP 仓库、GPU 环境**。
 四样都是公开的，§3 逐条写了去哪拿、放哪里。
 
 > 验证状态：本仓库的代码与数字来自同一台集群上的实际运行；**未在第二台机器上做过端到端验证**。
-> 第一次在新机器上跑，请先执行 `python paths.py`（会打印所有路径并告诉你哪个不存在），再按 §4 走。
+> 第一次在新机器上跑，请先执行 `python scripts/paths.py`（会打印所有路径并告诉你哪个不存在），再按 §4 走。
 
 ---
 
@@ -70,14 +70,15 @@ conda install -c conda-forge dssp          # 提供 mkdssp（DSSP 二级结构�
 
 要点：
 
-- **mkdssp 必须在 PATH 里**（或 `export MKDSSP=/path/to/mkdssp`）。`features.py` 直接调它。
+- **mkdssp 必须在 PATH 里**（或 `export MKDSSP=/path/to/mkdssp`）。`scripts/features.py` 直接调它。
   找不到时脚本**不会崩**，但 DSSP 那 15 维会全变成 0、预测质量明显下降（会打印一次警告）；
-  想让它直接报错，设 `export GNNSITE_STRICT=1`。先跑 `python paths.py` 就能看到 `MKDSSP` 是 YES 还是 NO。
+  想让它直接报错，设 `export GNNSITE_STRICT=1`。先跑 `python scripts/paths.py` 就能看到 `MKDSSP` 是 YES 还是 NO。
 - `freesasa` 是 pip 源码包，需要 C 编译器；装不上就用 `conda install -c conda-forge freesasa`。
 - **GPU**：训练与对接需要 CUDA。登录节点通常没有 GPU，DSDP 的 CUDA 二进制在纯 CPU 节点会直接
   `Segmentation fault`，所以要用集群调度器（本仓库给了 `*.sbatch` 模板，改分区名即可）。
   没有 GPU 也能跑通数据构建与 CPU 训练，只是慢。
-- 本仓库的脚本都用 `python xxx.py` 直接运行，**不需要安装成包**（同目录 `import paths` 即可）。
+- 本仓库的脚本都在 `scripts/` 下，用 `python scripts/xxx.py` 直接运行，**不需要安装成包**
+  （脚本之间通过同目录 `import paths` 解析路径，`paths.py` 会自动认出仓库根目录）。
 
 ---
 
@@ -92,7 +93,11 @@ conda install -c conda-forge dssp          # 提供 mkdssp（DSSP 二级结构�
 ```
 你的工作目录/
 ├── gnn-dsdp/                 # 本仓库（clone 下来就叫这个，任意名字都行）
-│   ├── paths.py  *.py  *.sbatch  best_model.pt
+│   ├── README.md  LICENSE  requirements.txt  .gitignore
+│   ├── scripts/              # 全部 Python 脚本（含 paths.py 配置入口）
+│   ├── slurm/                # slurm 作业模板（*.sbatch）
+│   ├── docs/                 # 各阶段实验报告（编号 01–09）
+│   ├── best_model.pt         # 训练好的模型（55 KB）
 │   ├── pdbbind_v2020/        # ← §3.1 解包到这里（约 10 GB），或设 PDBBIND_DIR
 │   ├── splits/               # ← §3.2 三个编号文件放这里，或设 SPLIT_DIR
 │   └── data/  results/  reports/  runs/     # 生成物
@@ -118,7 +123,7 @@ conda install -c conda-forge dssp          # 提供 mkdssp（DSSP 二级结构�
   ├── refined-set/<pdbid>/<pdbid>_protein.pdb, _ligand.mol2, _ligand.sdf, _pocket.pdb
   └── v2020-other-PL/<pdbid>/...
   ```
-- **验证**：`python collect_structures.py` 会打印 5,316 + 14,127 = 19,443，并核对切分覆盖率。
+- **验证**：`python scripts/collect_structures.py` 会打印 5,316 + 14,127 = 19,443，并核对切分覆盖率。
 - ⚠️ **许可**：PDBBind 明确禁止再分发。请不要把这份数据（或其派生的 `data/`）提交到仓库；
   `.gitignore` 已经把它们挡住了。
 
@@ -129,7 +134,7 @@ conda install -c conda-forge dssp          # 提供 mkdssp（DSSP 二级结构�
   - `timesplit_no_lig_overlap_val`（968 行）
   - `timesplit_test`（363 行）  ← **注意这个文件没有 `no_lig_overlap` 前缀**
 - **放哪**：`$SPLIT_DIR`（默认 `<repo>/splits/`），保持上面的文件名不变。
-- **验证**：`python paths.py` 会打印三个文件的行数；应为 16379 / 968 / 363。
+- **验证**：`python scripts/paths.py` 会打印三个文件的行数；应为 16379 / 968 / 363。
 - 说明：这是 PDBBind 的 **time split**（训练集年份早于测试集），且训练/测试**无配体重叠**，
   所以不存在泄漏，不需要自己再随机切分。
 
@@ -154,7 +159,7 @@ git sparse-checkout add test_dataset        # 恢复后 test_dataset 共 1460 �
   - `test_dataset/DSDP_dataset/`（995 个，其中 1a2b 用作冒烟例子）
   - `DSDP_redocking/DSDP`（按盒子对接）、`DSDP_blind_docking/DSDP`（基线盲对接）
   - `binding_site_model.pth`（C2 基线用的 3D-CNN 权重）
-- **验证**：`python paths.py` 里 `DSDP_HOME` / `TEST_PDBBIND_DIR` / `REDOCK_BIN` 应为 `YES`。
+- **验证**：`python scripts/paths.py` 里 `DSDP_HOME` / `TEST_PDBBIND_DIR` / `REDOCK_BIN` 应为 `YES`。
 
 ### 3.4 全部环境变量（都可选）
 
@@ -168,7 +173,7 @@ git sparse-checkout add test_dataset        # 恢复后 test_dataset 共 1460 �
 | `REDOCK_BIN` / `BLIND_BIN` | `$DSDP_HOME/...` | 两个 DSDP 二进制 |
 
 ```bash
-python paths.py       # 一次性看全部路径 + 是否存在 + 切分文件行数
+python scripts/paths.py       # 一次性看全部路径 + 是否存在 + 切分文件行数
 ```
 
 ---
@@ -177,35 +182,35 @@ python paths.py       # 一次性看全部路径 + 是否存在 + 切分文件�
 
 ```bash
 cd gnn-dsdp
-python paths.py            # 0. 自检：4 样数据是否就位
+python scripts/paths.py            # 0. 自检：4 样数据是否就位
 
-python collect_structures.py                    # 1. 结构索引 + 覆盖率核对（秒级）
+python scripts/collect_structures.py                    # 1. 结构索引 + 覆盖率核对（秒级）
 
-python build_dataset.py --split test            # 2. 5 Å 残基标签（test 12 s / val 1.5 min / train 21 min）
-python build_dataset.py --split val
-python build_dataset.py --split train
+python scripts/build_dataset.py --split test            # 2. 5 Å 残基标签（test 12 s / val 1.5 min / train 21 min）
+python scripts/build_dataset.py --split val
+python scripts/build_dataset.py --split train
 
-python graph.py --batch --split test  --workers 16   # 3. 46 维特征 + 建图（train 约 19 min，输出 data/graph/*.pt）
-python graph.py --batch --split val   --workers 16
-python graph.py --batch --split train --workers 16
+python scripts/graph.py --batch --split test  --workers 16   # 3. 46 维特征 + 建图（train 约 19 min，输出 data/graph/*.pt）
+python scripts/graph.py --batch --split val   --workers 16
+python scripts/graph.py --batch --split train --workers 16
 
-sbatch train_full.sbatch        # 4. 训练（GPU，100 epoch 约 12 min；CPU 会慢很多）
-#   等价：python train_full.py --device cuda --epochs 100 --batch-size 32 --patience 15
+sbatch slurm/train_full.sbatch        # 4. 训练（GPU，100 epoch 约 12 min；CPU 会慢很多）
+#   等价：python scripts/train_full.py --device cuda --epochs 100 --batch-size 32 --patience 15
 #           --seed 0 --tag c7b --ckpt-name best_model.pt
 
-python evaluate_model.py --model best_model.pt --device cpu   # 5. val/test 指标 + 阈值表
+python scripts/evaluate_model.py --model best_model.pt --device cpu   # 5. val/test 指标 + 阈值表
 
-python predict.py --protein 6qqw --out predict_6qqw.csv # 6. 单蛋白：每残基概率表
+python scripts/predict.py --protein 6qqw --out predict_6qqw.csv # 6. 单蛋白：每残基概率表
 
-python residue_to_box.py --protein 6qqw \               # 7. 残基 → 对接盒子
+python scripts/residue_to_box.py --protein 6qqw \               # 7. 残基 → 对接盒子
     --ligand "$DSDP_HOME/test_dataset/PDBBind_time_split_dataset/6qqw/6qqw_ligand.pdbqt"
 
-sbatch baseline_dsdp_cnn.sbatch           # 8a. 基线：原版 DSDP 3D-CNN 在 test 363 上的残基级指标
-sbatch run_docking_examples.sbatch           # 8b. 端到端：1a2b / 6qqw / 6qxa 出 pose + RMSD（GPU）
-sbatch benchmark_end2end.sbatch         # 8c. 40 个蛋白、两条管线对比（GPU）
+sbatch slurm/baseline_dsdp_cnn.sbatch           # 8a. 基线：原版 DSDP 3D-CNN 在 test 363 上的残基级指标
+sbatch slurm/run_docking_examples.sbatch           # 8b. 端到端：1a2b / 6qqw / 6qxa 出 pose + RMSD（GPU）
+sbatch slurm/benchmark_end2end.sbatch         # 8c. 40 个蛋白、两条管线对比（GPU）
 
-python make_figures.py                       # 9. 表与图 → results/
-python make_pocket_views.py --ids 6g2o,6jao,6qqw,6kqi,5zk7   #    口袋可视化 → results/viz/
+python scripts/make_figures.py                       # 9. 表与图 → results/
+python scripts/make_pocket_views.py --ids 6g2o,6jao,6qqw,6kqi,5zk7   #    口袋可视化 → results/viz/
 ```
 
 **预计总耗时**（16 核 + 单卡）：数据构建约 45 min，训练约 12 min，评估/盒子/图几分钟。
@@ -216,8 +221,8 @@ python make_pocket_views.py --ids 6g2o,6jao,6qqw,6kqi,5zk7   #    口袋可视�
 | 想做什么 | 怎么做 |
 |---|---|
 | 换 GPU 分区 | 改 `*.sbatch` 里的 `#SBATCH -p` |
-| 只用一小部分训练（冒烟） | `python train_full.py --train-limit 3000 --device cuda` |
-| 已有训练好的模型只做推理 | 直接用 `best_model.pt`：`predict.py` / `residue_to_box.py` / `run_gnn_dsdp.py` |
+| 只用一小部分训练（冒烟） | `python scripts/train_full.py --train-limit 3000 --device cuda` |
+| 已有训练好的模型只做推理 | 直接用 `best_model.pt`：`scripts/predict.py` / `scripts/residue_to_box.py` / `scripts/run_gnn_dsdp.py` |
 | 自己的蛋白 | `predict.py --protein my_protein.pdb`；盒子 `residue_to_box.py --protein my_protein.pdb` |
 
 ---
@@ -234,7 +239,7 @@ python make_pocket_views.py --ids 6g2o,6jao,6qqw,6kqi,5zk7   #    口袋可视�
 5. **损失**：`NLLLoss(weight=[1, neg/pos≈22])` 对付类别不平衡。
 6. **残基 → 盒子**：概率 ≥ 0.5 的残基 → Cα 单链接聚类（≤8 Å）→ 取最大的簇 →
    概率加权质心为盒心 → **36 Å 立方** → 交给 `DSDP_redocking/DSDP --box_min/--box_max`。
-   阈值/边长/聚类半径**全部在 val 968 上选定**（见 `scan_box_params.py`），test 只做一次性报告。
+   阈值/边长/聚类半径**全部在 val 968 上选定**（见 `scripts/scan_box_params.py`），test 只做一次性报告。
 
 ---
 
@@ -250,7 +255,7 @@ python make_pocket_views.py --ids 6g2o,6jao,6qqw,6kqi,5zk7   #    口袋可视�
   1. 登录节点无 GPU，CUDA 二进制会 `Segmentation fault`，必须走调度器；
   2. DSDP 的 `--dataset_path` 会把目录下**每个子目录**都当成复合物 —— `site/out/log` 不能放进去；
   3. **DSSP 4.x 输出列位变了**（1–5 列是连续序号，6–10 列才是残基号），Biopython 1.83 会错位，
-     `features.py` 改为按固定列解析并用 Biopython 交叉验证氢键（410/410 一致）；
+     `scripts/features.py` 改为按固定列解析并用 Biopython 交叉验证氢键（410/410 一致）；
   4. 少数残基缺 CA，用重原子质心兜底。
 
 ---
@@ -282,25 +287,25 @@ python make_pocket_views.py --ids 6g2o,6jao,6qqw,6kqi,5zk7   #    口袋可视�
 
 | 文件 | 作用 |
 |---|---|
-| `paths.py` | **唯一路径配置**（环境变量 + 默认值），`python paths.py` 自检 |
-| `collect_structures.py` | 扫 PDBBind 建 `structure_index.json`，核对切分覆盖率 |
-| `build_dataset.py` | 5 Å 残基标签 → `data/label/<split>/*.npz` |
-| `features.py` | 46 维残基特征（自写 DSSP 解析 + freesasa） |
-| `graph.py` | Cα ≤10 Å 建边、权重 1/d²、PyG `Data`；支持批量多进程 |
-| `model.py` | 4 层 GCN + 维度自检 |
-| `train_smoke.py` | 冒烟训练（30 图 / 2 epoch，验证管线） |
-| `train_full.py` | 正式训练（早停 / 存 best / 日志 / 曲线） |
-| `predict.py` | 每残基概率 → CSV |
-| `residue_to_box.py` | 概率 → 聚类 → 36 Å 盒子（`box_min/box_max` + 诊断 json） |
-| `run_gnn_dsdp.py` | GNN → 盒子 → DSDP 对接 → RMSD 一条龙 |
-| `scan_box_params.py` | 盒子参数在 val 上的扫描（选阈值/边长/中心规则） |
-| `baseline_dsdp_cnn.py` | 原版 DSDP 3D-CNN 推理 + 体素→残基投影（基线） |
-| `evaluate_model.py` / `analyze_box_coverage.py` | 最终指标 / 盒子覆盖分析 |
-| `benchmark_end2end.py` | 40 蛋白两条管线端到端对比 |
-| `analyze_dsdp_boxes.py` | 按 DSDP 源码复算其盒子覆盖率 |
-| `evaluate_dude.py` | DUD-E 102 补充评估 |
-| `make_figures.py` / `make_pocket_views.py` | 表与图 / 口袋 3D 可视化 |
-| `*.sbatch` | slurm 模板（训练 / 基线 / 端到端对比 / 冒烟） |
+| `scripts/paths.py` | **唯一路径配置**（环境变量 + 默认值），`python scripts/paths.py` 自检 |
+| `scripts/collect_structures.py` | 扫 PDBBind 建 `structure_index.json`，核对切分覆盖率 |
+| `scripts/build_dataset.py` | 5 Å 残基标签 → `data/label/<split>/*.npz` |
+| `scripts/features.py` | 46 维残基特征（自写 DSSP 解析 + freesasa） |
+| `scripts/graph.py` | Cα ≤10 Å 建边、权重 1/d²、PyG `Data`；支持批量多进程 |
+| `scripts/model.py` | 4 层 GCN + 维度自检 |
+| `scripts/train_smoke.py` | 冒烟训练（30 图 / 2 epoch，验证管线） |
+| `scripts/train_full.py` | 正式训练（早停 / 存 best / 日志 / 曲线） |
+| `scripts/predict.py` | 每残基概率 → CSV |
+| `scripts/residue_to_box.py` | 概率 → 聚类 → 36 Å 盒子（`box_min/box_max` + 诊断 json） |
+| `scripts/run_gnn_dsdp.py` | GNN → 盒子 → DSDP 对接 → RMSD 一条龙 |
+| `scripts/scan_box_params.py` | 盒子参数在 val 上的扫描（选阈值/边长/中心规则） |
+| `scripts/baseline_dsdp_cnn.py` | 原版 DSDP 3D-CNN 推理 + 体素→残基投影（基线） |
+| `scripts/evaluate_model.py` / `scripts/analyze_box_coverage.py` | 最终指标 / 盒子覆盖分析 |
+| `scripts/benchmark_end2end.py` | 40 蛋白两条管线端到端对比 |
+| `scripts/analyze_dsdp_boxes.py` | 按 DSDP 源码复算其盒子覆盖率 |
+| `scripts/evaluate_dude.py` | DUD-E 102 补充评估 |
+| `scripts/make_figures.py` / `scripts/make_pocket_views.py` | 表与图 / 口袋 3D 可视化 |
+| `slurm/*.sbatch` | slurm 模板：`train_full` / `train_3000` / `baseline_dsdp_cnn` / `run_docking_examples` / `benchmark_end2end`(+`_smoke`) / `smoke_dsdp` |
 | `best_model.pt` | **最终模型**（epoch 92，3,570 参数） |
 | `docs/` | 各阶段实验报告：`01_environment` … `08_benchmark_and_figures`，`09_ppt_points` |
 | `results/` | 两张主表 CSV、4 张图、5 个蛋白可视化 |

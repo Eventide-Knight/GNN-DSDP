@@ -21,7 +21,7 @@ Protein handling:
                         CA coordinates identical).
 
 Usage (on a GPU node):
-  python run_gnn_dsdp.py --protein 6qqw \
+  python scripts/run_gnn_dsdp.py --protein 6qqw \
       --ligand .../6qqw_ligand.pdbqt --out runs/6qqw_out.pdbqt \
       --log runs/6qqw_out.log --json runs/6qqw.json
 """

@@ -14,7 +14,8 @@
 
 set -e
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd "$HERE"
+REPO="$(cd "$HERE/.." && pwd)"
+cd "$REPO"
 
 source "${CONDA_SH:-$HOME/miniconda3/etc/profile.d/conda.sh}"
 conda activate "${CONDA_ENV:-DSDP}"
@@ -23,6 +24,6 @@ echo "START $(date) job=$SLURM_JOB_ID node=$SLURMD_NODENAME dir=$HERE"
 nvidia-smi -L || true
 python -c "import torch;print('cuda:',torch.cuda.is_available())"
 
-python train_full.py --device cuda --epochs 100 --batch-size 32 --patience 15 \
+python scripts/train_full.py --device cuda --epochs 100 --batch-size 32 --patience 15 \
     --seed 0 --weight-mode linear --tag c7a --train-limit 3000 --ckpt-name c7a_best.pt
 echo "END $(date) exit=$?"
