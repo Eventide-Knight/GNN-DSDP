@@ -12,7 +12,7 @@
 # C9：GNN -> 盒子 -> DSDP 对接 -> RMSD 的三个代表蛋白
 #   1a2b（仓库自带例子） / 6qqw（成功案例） / 6qxa（失败案例）
 # 依赖：DSDP 已编译（$DSDP_HOME/DSDP_redocking/DSDP），test 数据集在 $DSDP_HOME/test_dataset
-# 提交前：  sbatch c9_gpu.sbatch
+# 提交前：  sbatch run_docking_examples.sbatch
 
 set -e
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

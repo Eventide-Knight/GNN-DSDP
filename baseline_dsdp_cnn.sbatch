@@ -11,7 +11,7 @@
 #
 # C2 基线：用原版 DSDP 的 3D-CNN（binding_site_model.pth）跑 test 363 的位点预测，
 # 再投影到残基级。需要 DSDP 仓库（默认与本仓库同级，可用 DSDP_HOME 覆盖）。
-# 提交前：  sbatch c2_gpu.sbatch
+# 提交前：  sbatch baseline_dsdp_cnn.sbatch
 
 set -e
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -24,7 +24,7 @@ export DSDP_HOME="${DSDP_HOME:-$(python -c "import paths;print(paths.DSDP_HOME)"
 echo "START $(date) job=$SLURM_JOB_ID node=$SLURMD_NODENAME dsdp=$DSDP_HOME"
 nvidia-smi -L || true
 
-# c2_baseline.py 会 import DSDP_blind_docking.py 里的 DrugSiteMind，所以从 DSDP 根目录跑
+# baseline_dsdp_cnn.py 会 import DSDP_blind_docking.py 里的 DrugSiteMind，所以从 DSDP 根目录跑
 cd "$DSDP_HOME"
-python "$HERE/c2_baseline.py" --device cuda
+python "$HERE/baseline_dsdp_cnn.py" --device cuda
 echo "END $(date) exit=$?"

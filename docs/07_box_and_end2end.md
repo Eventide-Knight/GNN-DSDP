@@ -6,7 +6,7 @@
 
 ## 0. 盒子参数在 val 968 上定（不用 test 调参）
 
-`box_param_scan.py` 在 val 968 上扫：阈值 {0.3,0.4,0.5,0.6,0.7}、top-k {10,20,30} × 盒边长 {30,33,36,43} Å × 中心 {质心, 概率加权质心}，指标 = **真实配体重原子被盒子包住的百分比**（比 AUC 更贴近对接成败）。
+`scan_box_params.py` 在 val 968 上扫：阈值 {0.3,0.4,0.5,0.6,0.7}、top-k {10,20,30} × 盒边长 {30,33,36,43} Å × 中心 {质心, 概率加权质心}，指标 = **真实配体重原子被盒子包住的百分比**（比 AUC 更贴近对接成败）。
 
 决策规则（**看数据前就写死**）：盒边长 ≤ 36 Å，先最大化"覆盖 ≥90% 的复合物比例"，再比平均覆盖。val 结果（加权质心）：
 
@@ -18,7 +18,7 @@
 | thr 0.7 | 69.3% | 73.8% | 78.1% | 83.6% |
 | top-20 | 68.9% | 72.2% | 76.3% | 82.5% |
 
-（表内是"覆盖 ≥0.9 的复合物比例"；平均覆盖见 `reports/c8_box_param_val.json`）
+（表内是"覆盖 ≥0.9 的复合物比例"；平均覆盖见 `reports/box_params_val.json`）
 
 **选定：`threshold=0.5`、`box_size=36 Å`、`centre=概率加权质心`、`eps=8 Å`**
 → val：平均覆盖 **0.857**，**79.0%** 复合物覆盖 ≥90%，中位中心误差 **9.4 Å**。
@@ -97,13 +97,13 @@ python run_gnn_dsdp.py --protein <pdb|pdbqt|id> --ligand <pdbqt> --out runs/<id>
 |---|---|
 | `gnn_site/residue_to_box.py` | C8：蛋白 → box_min/box_max + 诊断 |
 | `gnn_site/run_gnn_dsdp.py` | C9：GNN → 盒子 → DSDP → RMSD 一条龙 |
-| `gnn_site/box_param_scan.py` | val 上的盒子参数扫描 |
-| `gnn_site/reports/c8_box_param_val.json` | val 全表（64 组） + chosen |
-| `gnn_site/reports/c8_test_once.json` | test 363 一次性覆盖数字 |
+| `gnn_site/scan_box_params.py` | val 上的盒子参数扫描 |
+| `gnn_site/reports/box_params_val.json` | val 全表（64 组） + chosen |
+| `gnn_site/reports/box_test_once.json` | test 363 一次性覆盖数字 |
 | `gnn_site/reports/box_6qqw.json` | 6qqw 盒子诊断 |
 | `gnn_site/runs/{1a2b,6qqw,6qxa}.json` / `_out.pdbqt` / `_out.log` | C9 三个蛋白的端到端产物 |
 | `gnn_site/reports/c9_slurm.out` | C9 作业日志 |
-| `gnn_site/reports/c7b_gnn_smoothing.json` | 平滑口径数字 |
+| `gnn_site/reports/smoothing_check.json` | 平滑口径数字 |
 
 ## 5. 下一步
 

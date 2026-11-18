@@ -48,7 +48,7 @@ NODECODER_DIR = _p("NODECODER_DIR", os.path.join(os.path.dirname(HOME_DIR), "Nod
 # 派生路径
 DATA_DIR = os.path.join(GNNSITE_HOME, "data")
 INDEX_JSON = os.path.join(GNNSITE_HOME, "structure_index.json")
-SKIPPED = os.path.join(GNNSITE_HOME, "skipped.txt")
+SKIPPED = os.path.join(GNNSITE_HOME, "reports/skipped.txt")
 REPORTS_DIR = os.path.join(GNNSITE_HOME, "reports")
 RESULTS_DIR = os.path.join(GNNSITE_HOME, "results")
 RUNS_DIR = os.path.join(GNNSITE_HOME, "runs")

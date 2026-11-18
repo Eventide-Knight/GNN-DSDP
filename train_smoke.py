@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""train.py -- minimal training loop for the residue GCN (C6 smoke only).
+"""train_smoke.py -- minimal training loop for the residue GCN (C6 smoke only).
 
 This is the pipeline proof, NOT the real training run:
   * a handful of train graphs (20-50) and the 10 val graphs,
@@ -17,11 +17,11 @@ It verifies, with assertions and printed evidence:
   4. PR-AUC / ROC-AUC can be computed on the val graphs.
 
 Loss head: 8 -> 2 logits, NLLLoss(weight=[1, neg/pos]).
-Modelled on $NODECODER_DIR/src/NodeCoder/gcn/NodeCoder_train.py
+Modelled on $NODECODER_DIR/src/NodeCoder/gcn/NodeCoder_train_smoke.py
 (`weighted_loss` variants: Linear / Logarithmic / Smoothed_Linear / none).
 
 Usage:
-  python train.py --train-limit 30 --val-limit 10 --epochs 2 --batch-size 8 \
+  python train_smoke.py --train-limit 30 --val-limit 10 --epochs 2 --batch-size 8 \
       --lr 0.01 --weight-mode linear --device cpu
 """
 import argparse

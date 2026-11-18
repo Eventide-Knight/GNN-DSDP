@@ -10,7 +10,7 @@
 #SBATCH -e c7a_%j.err
 #
 # 两段式训练的第一段：只用前 3,000 个 train 复合物（用来快速验证管线与超参）。
-# 提交前：  sbatch c7a_gpu.sbatch
+# 提交前：  sbatch train_3000.sbatch
 
 set -e
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""box_param_scan.py -- choose the residue->box rule on the VALIDATION split.
+"""scan_box_params.py -- choose the residue->box rule on the VALIDATION split.
 
 C8 must not be tuned on test, so this script sweeps, on val 968 only:
   * residue selection: probability threshold 0.3/0.4/0.5/0.6/0.7, or top-k 10/20/30
@@ -15,7 +15,7 @@ the largest (n_residues * sum(prob)), then build the box and clip its centre so
 the box stays inside the protein CA bounding box.
 
 Usage:
-  python box_param_scan.py --model best_model.pt --split val
+  python scan_box_params.py --model best_model.pt --split val
 """
 import argparse
 import glob
@@ -134,7 +134,7 @@ def main():
     ap.add_argument("--split", default="val")
     ap.add_argument("--device", default="cpu")
     ap.add_argument("--eps", type=float, default=8.0)
-    ap.add_argument("--json", default=os.path.join(BASE, "reports", "c8_box_param_val.json"))
+    ap.add_argument("--json", default=os.path.join(BASE, "reports", "box_params_val.json"))
     args = ap.parse_args()
 
     device = torch.device(args.device if (args.device == "cpu" or torch.cuda.is_available())

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""c10_dsdp_coverage.py -- faithful DSDP-box coverage for the C10 e2e table.
+"""analyze_dsdp_boxes.py -- faithful DSDP-box coverage for the C10 e2e table.
 
 The DSDP blind-docking binary never prints its box, so we reproduce it from
 source (DSDP_blind_docking/main_SingleRun.cu + Site_Information.cu + CLUSTER.cpp):
@@ -12,10 +12,10 @@ source (DSDP_blind_docking/main_SingleRun.cu + Site_Information.cu + CLUSTER.cpp
     contains the ligand.
 
 This script recomputes dsdp.coverage / dsdp.failure_class for the rows already
-produced by c10_e2e.py (no docking involved) and refreshes the summaries.
+produced by benchmark_end2end.py (no docking involved) and refreshes the summaries.
 
 Usage:
-  python c10_dsdp_coverage.py --json runs/c10_e2e.json --csv runs/c10_e2e.csv
+  python analyze_dsdp_boxes.py --json runs/e2e_benchmark.json --csv runs/e2e_benchmark.csv
 """
 import argparse
 import csv
@@ -121,8 +121,8 @@ def summarize(rows, key):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--json", default=os.path.join(BASE, "runs", "c10_e2e.json"))
-    ap.add_argument("--csv", default=os.path.join(BASE, "runs", "c10_e2e.csv"))
+    ap.add_argument("--json", default=os.path.join(BASE, "runs", "e2e_benchmark.json"))
+    ap.add_argument("--csv", default=os.path.join(BASE, "runs", "e2e_benchmark.csv"))
     args = ap.parse_args()
 
     blob = json.load(open(args.json))

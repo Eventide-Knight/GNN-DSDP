@@ -20,7 +20,7 @@ biopython==1.83
 freesasa==2.2.1
 loguru==0.8.0
 
-# DSDP 的 Python 入口（c2_baseline.py 复用其 DrugSiteMind）需要：
+# DSDP 的 Python 入口（baseline_dsdp_cnn.py 复用其 DrugSiteMind）需要：
 openbabel-wheel==3.1.1.23
 
 # mkdssp（DSSP 二级结构）不是 pip 包，用 conda 装：

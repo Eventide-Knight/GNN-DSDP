@@ -165,7 +165,7 @@ def residues_arrays(res):
 
 
 # --------------------------------------------------------------------------- #
-# DSSP (mkdssp 4.x legacy output; parsed by fixed columns, see env_check.md)
+# DSSP (mkdssp 4.x legacy output; parsed by fixed columns, see docs/01_environment.md)
 # --------------------------------------------------------------------------- #
 _HDR_AA = 13      # column of the AA letter (0-based)
 _HDR_SS = 16      # column of the secondary-structure letter

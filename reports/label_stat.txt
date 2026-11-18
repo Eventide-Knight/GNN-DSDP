@@ -1,4 +1,4 @@
-# label_stat.txt (aggregate over data/label/<split>/*.npz) -- 2026-11-18 19:37:07
+# reports/label_stat.txt (aggregate over data/label/<split>/*.npz) -- 2026-11-18 19:37:07
 split    proteins   residues   positive   negative     pos%
 train        3000    1350188      58463    1291725    4.33%
 val            10       4952        235       4717    4.75%

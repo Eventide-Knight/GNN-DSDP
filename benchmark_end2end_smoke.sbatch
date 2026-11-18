@@ -1,27 +1,27 @@
 #!/bin/bash
-#SBATCH -J gnn_c10full
+#SBATCH -J gnn_c10smoke
 #SBATCH -p gpu1
 #SBATCH -N 1
 #SBATCH -n 1
 #SBATCH --cpus-per-task=8
 #SBATCH --gres=gpu:1
-#SBATCH -t 1:00:00
-#SBATCH -o c10full_%j.out
-#SBATCH -e c10full_%j.err
+#SBATCH -t 0:30:00
+#SBATCH -o c10smoke_%j.out
+#SBATCH -e c10smoke_%j.err
 #
-# C10：40 个 test 复合物、两条管线（GNN 盒子 vs DSDP 原版盲对接）的端到端对比
-# 提交前：  sbatch c10_full.sbatch
+# C10 冒烟：只跑 2 个蛋白，验证两条管线都能出 RMSD
+# 提交前：  sbatch benchmark_end2end_smoke.sbatch
 
 set -e
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$HERE"
-mkdir -p runs/c10
+mkdir -p runs/c10_smoke
 
 source "${CONDA_SH:-$HOME/miniconda3/etc/profile.d/conda.sh}"
 conda activate "${CONDA_ENV:-DSDP}"
 
 echo "START $(date) job=$SLURM_JOB_ID node=$SLURMD_NODENAME"
 nvidia-smi -L || true
-python c10_e2e.py --n 40 --device cuda \
-  --json runs/c10_e2e.json --csv runs/c10_e2e.csv --outdir runs/c10
+python benchmark_end2end.py --ids 6qqw,1a2b --device cuda \
+  --json runs/e2e_smoke.json --csv runs/e2e_smoke.csv --outdir runs/c10_smoke
 echo "END $(date) exit=$?"

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""c2_baseline.py -- DSDP 3D-CNN (DrugSiteMind) site prediction projected to residues.
+"""baseline_dsdp_cnn.py -- DSDP 3D-CNN (DrugSiteMind) site prediction projected to residues.
 
 Pipeline (task book section 4, Step 2):
   1. run the original DSDP site predictor on the 363 test complexes of
@@ -19,14 +19,14 @@ Outputs:
                                        DSDP's get_pockets_segmentation does)
   gnn_site/baseline_dsdp_residue.csv   pdb_id,res_idx,chain,resseq,icode,resname,
                                        label,score_voxel,score_nbhd
-  gnn_site/reports/c2_metrics.json     metrics + timings
+  gnn_site/reports/baseline_metrics.json     metrics + timings
 
 The DrugSiteData / DrugSiteMind classes are imported from the original
 DSDP_blind_docking.py (source executed up to the `if __name__` guard), so the
 features/model are exactly the shipped ones. Must run on a GPU node (CUDA).
 
 Usage:
-  python c2_baseline.py --limit 0 --device cuda
+  python baseline_dsdp_cnn.py --limit 0 --device cuda
 """
 import argparse
 import json
@@ -88,7 +88,7 @@ def main():
     ap.add_argument("--model", default=os.path.join(DSDP_DIR, "binding_site_model.pth"))
     ap.add_argument("--labels-dir", default=os.path.join(BASE, "data", "label", "test"))
     ap.add_argument("--csv", default=os.path.join(BASE, "baseline_dsdp_residue.csv"))
-    ap.add_argument("--json", default=os.path.join(BASE, "reports", "c2_metrics.json"))
+    ap.add_argument("--json", default=os.path.join(BASE, "reports", "baseline_metrics.json"))
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--device", default="cuda")
     ap.add_argument("--batch-size", type=int, default=1)

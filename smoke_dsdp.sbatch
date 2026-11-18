@@ -11,7 +11,7 @@
 # 冒烟：用原版 DSDP blind docking 跑通一个复合物（验证 DSDP 编译产物 + GPU 环境）。
 # 需要先把复合物放进一个"只含复合物子目录"的文件夹（DSDP 会把它下面每个子目录当成一个复合物）：
 #   mkdir -p smoke_1a2b/data && cp -r $DSDP_HOME/test_dataset/DSDP_dataset/1a2b smoke_1a2b/data/
-# 提交前：  sbatch smoke_1a2b.sbatch
+# 提交前：  sbatch smoke_dsdp.sbatch
 
 set -e
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

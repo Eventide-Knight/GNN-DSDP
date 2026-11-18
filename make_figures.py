@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""c10_figures.py -- final comparison tables + figures for the demo.
+"""make_figures.py -- final comparison tables + figures for the demo.
 
 Outputs (all under gnn_site/results/):
   table_residue_test363.csv   table 1: residue-level AUCs on test 363
@@ -11,7 +11,7 @@ Outputs (all under gnn_site/results/):
   c7b_curve.png               copy of the training curve (appendix)
 
 Usage:
-  python c10_figures.py
+  python make_figures.py
 """
 import csv
 import glob
@@ -46,9 +46,9 @@ def load_json(path):
 
 
 def table1():
-    c2 = load_json(os.path.join(BASE, "reports", "c2_metrics.json"))
-    ev = load_json(os.path.join(BASE, "reports", "c7b_eval.json"))
-    sm = load_json(os.path.join(BASE, "reports", "c7b_gnn_smoothing.json"))
+    c2 = load_json(os.path.join(BASE, "reports", "baseline_metrics.json"))
+    ev = load_json(os.path.join(BASE, "reports", "eval_model.json"))
+    sm = load_json(os.path.join(BASE, "reports", "smoothing_check.json"))
     rows = [
         {"method": "DSDP 3D-CNN", "variant": "CA voxel", "roc_auc": c2["score_voxel"]["roc_auc"],
          "pr_auc": c2["score_voxel"]["pr_auc"],
@@ -75,7 +75,7 @@ def table1():
 
 
 def table2():
-    blob = load_json(os.path.join(BASE, "runs", "c10_e2e.json"))
+    blob = load_json(os.path.join(BASE, "runs", "e2e_benchmark.json"))
     s = blob["summary"]
     rows = [
         {"pipeline": "GNN box (thr0.5/36A)", "n": s["gnn"]["n"],

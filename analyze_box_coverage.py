@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""c7b_boxcheck.py -- which threshold should C8 use to build the docking box?
+"""analyze_box_coverage.py -- which threshold should C8 use to build the docking box?
 
 For every test complex and every selection rule (probability threshold
 0.3/0.4/0.5/0.6/0.7, or top-k residues) we build the naive box = bounding box
@@ -14,7 +14,7 @@ of the selected residues' CA atoms (+ margin) and ask:
 This is analysis only; it does not build boxes for docking (that is C8).
 
 Usage:
-  python c7b_boxcheck.py --model best_model.pt --split test
+  python analyze_box_coverage.py --model best_model.pt --split test
 """
 import argparse
 import glob
@@ -98,7 +98,7 @@ def main():
     ap.add_argument("--margin", type=float, default=5.0,
                     help="A added on each side of the CA bounding box")
     ap.add_argument("--device", default="cpu")
-    ap.add_argument("--json", default=os.path.join(BASE, "reports", "c7b_boxcheck.json"))
+    ap.add_argument("--json", default=os.path.join(BASE, "reports", "box_coverage.json"))
     args = ap.parse_args()
 
     device = torch.device(args.device if (args.device == "cpu" or torch.cuda.is_available())

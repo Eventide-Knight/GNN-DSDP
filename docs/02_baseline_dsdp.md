@@ -1,7 +1,7 @@
 # C2 报告：DSDP（PUResNet 3D-CNN）残基级基线
 
 时间：2026-11-18 20:15（Asia/Shanghai）
-脚本：`gnn_site/c2_baseline.py`；作业 159729（GPU RTX 4090，cn1）；墙钟 77 s（含缓存复用）
+脚本：`gnn_site/baseline_dsdp_cnn.py`；作业 159729（GPU RTX 4090，cn1）；墙钟 77 s（含缓存复用）
 
 ## 1. 做法（与任务书 §4 Step 2 一致）
 
@@ -16,7 +16,7 @@
    - `score_nbhd`  = 该体素 3×3×3 邻域最大概率（更宽松的替代口径）
 4. 与 C4 生成的 5 Å 标签**逐残基对齐**（同一 `data/label/test/<id>.npz`，行数/顺序已校验）；
    Cα 坐标与仓库 pdbqt 完全一致（偏差 0.0000 Å），不存在坐标系错位。
-5. 产出 `gnn_site/baseline_dsdp_residue.csv`（130,222 行）与 `gnn_site/reports/c2_metrics.json`。
+5. 产出 `gnn_site/baseline_dsdp_residue.csv`（130,222 行）与 `gnn_site/reports/baseline_metrics.json`。
 
 ## 2. 结果（test 363，5 Å 标签，130,222 残基 / 7,290 正样本 = 5.60%）
 
@@ -45,7 +45,7 @@ C10 出表时必须把两种口径都列出来，不能只挑对 GNN 有利的�
 
 ## 4. 文件
 
-- `gnn_site/c2_baseline.py`：脚本
+- `gnn_site/baseline_dsdp_cnn.py`：脚本
 - `gnn_site/baseline_dsdp_residue.csv`：130,222 行（pdb_id,res_idx,chain,resseq,icode,resname,label,score_voxel,score_nbhd）
 - `gnn_site/c2_site/npy/*.npy`：363 个 36³ 概率图
-- `gnn_site/reports/c2_metrics.json`、`reports/c2_slurm.out`
+- `gnn_site/reports/baseline_metrics.json`、`reports/c2_slurm.out`

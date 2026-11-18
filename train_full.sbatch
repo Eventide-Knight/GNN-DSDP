@@ -9,7 +9,7 @@
 #SBATCH -o c7b_%j.out
 #SBATCH -e c7b_%j.err
 #
-# 正式训练（全量 16,379）。提交前：  sbatch c7b_train.sbatch
+# 正式训练（全量 16,379）。提交前：  sbatch train_full.sbatch
 # 需要事先 conda 环境（见 README「2. 环境」），或用 CONDA_SH / CONDA_ENV 覆盖。
 
 set -e

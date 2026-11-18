@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""c10_e2e.py -- end-to-end success rate: GNN box vs original DSDP blind docking.
+"""benchmark_end2end.py -- end-to-end success rate: GNN box vs original DSDP blind docking.
 
 For a stratified sample of test-363 complexes (strata by GNN top-20 hit rate)
 two pipelines are run with identical DSDP settings (exhaustiveness 384,
@@ -18,8 +18,8 @@ Failure classes: box_miss (ligand coverage < 0.5), sampled_but_fail
 (coverage >= 0.5 but RMSD >= 2), error.
 
 Usage (GPU node):
-  python c10_e2e.py --n 40 --json runs/c10_e2e.json
-  python c10_e2e.py --ids 6qqw,1a2b --json runs/c10_smoke.json
+  python benchmark_end2end.py --n 40 --json runs/e2e_benchmark.json
+  python benchmark_end2end.py --ids 6qqw,1a2b --json runs/e2e_smoke.json
 """
 import argparse
 import csv
@@ -145,8 +145,8 @@ def main():
     ap.add_argument("--n", type=int, default=40)
     ap.add_argument("--ids", default=None, help="comma separated override")
     ap.add_argument("--device", default="cuda")
-    ap.add_argument("--json", default=os.path.join(BASE, "runs", "c10_e2e.json"))
-    ap.add_argument("--csv", default=os.path.join(BASE, "runs", "c10_e2e.csv"))
+    ap.add_argument("--json", default=os.path.join(BASE, "runs", "e2e_benchmark.json"))
+    ap.add_argument("--csv", default=os.path.join(BASE, "runs", "e2e_benchmark.csv"))
     ap.add_argument("--timeout", type=int, default=180)
     ap.add_argument("--outdir", default=os.path.join(BASE, "runs", "c10"))
     args = ap.parse_args()

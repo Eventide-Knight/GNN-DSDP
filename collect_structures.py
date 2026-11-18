@@ -6,7 +6,7 @@ a JSON index mapping lowercase PDB ID -> absolute paths of
   <id>_protein.pdb, <id>_ligand.mol2, <id>_ligand.sdf, <id>_pocket.pdb
 
 Optionally verifies that every ID of the official time split
-(train/val/test) is present, writing gnn_site/skipped.txt for any miss.
+(train/val/test) is present, writing gnn_site/reports/skipped.txt for any miss.
 
 Test-split note (task book 2.5): for test IDs the ligand used for 5 A labels is
 the DSDP evaluation conformer from the repo

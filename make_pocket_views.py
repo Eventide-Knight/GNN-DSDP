@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""c10_viz.py -- 3D visualisation of representative proteins + PyMOL scripts.
+"""make_pocket_views.py -- 3D visualisation of representative proteins + PyMOL scripts.
 
 For each requested test complex it draws (matplotlib 3D, no PyMOL in this
 environment):
@@ -11,7 +11,7 @@ and writes a companion .pml script that reproduces the same view in PyMOL
 (`pymol -cq <id>.pml`) for anyone who has PyMOL installed.
 
 Usage:
-  python c10_viz.py --ids 6g2o,6jao,6kqi,5zk7 --outdir results/viz
+  python make_pocket_views.py --ids 6g2o,6jao,6kqi,5zk7 --outdir results/viz
 """
 import argparse
 import glob
@@ -69,7 +69,7 @@ def docked_pose(pid):
 
 
 def rmsd_of(pid):
-    p = os.path.join(RUNS, "c10_e2e.json")
+    p = os.path.join(RUNS, "e2e_benchmark.json")
     if not os.path.exists(p):
         return None
     d = json.load(open(p))

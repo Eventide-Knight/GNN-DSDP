@@ -15,7 +15,7 @@
 | 全部代码（19 个脚本）、slurm 提交脚本 | **任何结构/图数据**（PDBBind 许可禁止再分发） |
 | 训练好的模型 `best_model.pt`（55 KB） | 中间产物（`data/graph` 4.1 GB、`c2_site` 等） |
 | 所有结果表/图/日志（`results/`、`reports/`、`runs/`） | DSDP 的源码与二进制（需另装，见 §3.3） |
-| 各阶段实验报告（`*_report.md`） | 别人集群的绝对路径（已全部改为 `paths.py` + 环境变量） |
+| 各阶段实验报告（`docs/`） | 别人集群的绝对路径（已全部改为 `paths.py` + 环境变量） |
 
 **换机器能不能直接跑？** 代码层面可以（路径全部由 `paths.py` 解析、默认相对仓库自身），
 但有 4 样外部东西必须先准备好：**PDBBind 结构、EquiBind 切分编号、DSDP 仓库、GPU 环境**。
@@ -46,7 +46,7 @@
 | GNN 盒子（阈值 0.5 / 36 Å） | 40 | **13/40 = 32.5%** | 5.72 Å | 0.855 | 6 / 21 |
 | DSDP 原版 blind docking | 40 | **16/40 = 40.0%** | 4.58 Å | 0.900 | 4 / 20 |
 
-明细：`results/table_e2e.csv`、`runs/c10_e2e.csv`；图：`results/fig_e2e_rmsd.png`
+明细：`results/table_e2e.csv`、`runs/e2e_benchmark.csv`；图：`results/fig_e2e_rmsd.png`
 
 ### 其它
 
@@ -189,23 +189,23 @@ python graph.py --batch --split test  --workers 16   # 3. 46 维特征 + 建图�
 python graph.py --batch --split val   --workers 16
 python graph.py --batch --split train --workers 16
 
-sbatch c7b_train.sbatch        # 4. 训练（GPU，100 epoch 约 12 min；CPU 会慢很多）
+sbatch train_full.sbatch        # 4. 训练（GPU，100 epoch 约 12 min；CPU 会慢很多）
 #   等价：python train_full.py --device cuda --epochs 100 --batch-size 32 --patience 15
 #           --seed 0 --tag c7b --ckpt-name best_model.pt
 
-python c7b_eval.py --model best_model.pt --device cpu   # 5. val/test 指标 + 阈值表
+python evaluate_model.py --model best_model.pt --device cpu   # 5. val/test 指标 + 阈值表
 
 python predict.py --protein 6qqw --out predict_6qqw.csv # 6. 单蛋白：每残基概率表
 
 python residue_to_box.py --protein 6qqw \               # 7. 残基 → 对接盒子
     --ligand "$DSDP_HOME/test_dataset/PDBBind_time_split_dataset/6qqw/6qqw_ligand.pdbqt"
 
-sbatch c2_gpu.sbatch           # 8a. 基线：原版 DSDP 3D-CNN 在 test 363 上的残基级指标
-sbatch c9_gpu.sbatch           # 8b. 端到端：1a2b / 6qqw / 6qxa 出 pose + RMSD（GPU）
-sbatch c10_full.sbatch         # 8c. 40 个蛋白、两条管线对比（GPU）
+sbatch baseline_dsdp_cnn.sbatch           # 8a. 基线：原版 DSDP 3D-CNN 在 test 363 上的残基级指标
+sbatch run_docking_examples.sbatch           # 8b. 端到端：1a2b / 6qqw / 6qxa 出 pose + RMSD（GPU）
+sbatch benchmark_end2end.sbatch         # 8c. 40 个蛋白、两条管线对比（GPU）
 
-python c10_figures.py                       # 9. 表与图 → results/
-python c10_viz.py --ids 6g2o,6jao,6qqw,6kqi,5zk7   #    口袋可视化 → results/viz/
+python make_figures.py                       # 9. 表与图 → results/
+python make_pocket_views.py --ids 6g2o,6jao,6qqw,6kqi,5zk7   #    口袋可视化 → results/viz/
 ```
 
 **预计总耗时**（16 核 + 单卡）：数据构建约 45 min，训练约 12 min，评估/盒子/图几分钟。
@@ -234,7 +234,7 @@ python c10_viz.py --ids 6g2o,6jao,6qqw,6kqi,5zk7   #    口袋可视化 → resu
 5. **损失**：`NLLLoss(weight=[1, neg/pos≈22])` 对付类别不平衡。
 6. **残基 → 盒子**：概率 ≥ 0.5 的残基 → Cα 单链接聚类（≤8 Å）→ 取最大的簇 →
    概率加权质心为盒心 → **36 Å 立方** → 交给 `DSDP_redocking/DSDP --box_min/--box_max`。
-   阈值/边长/聚类半径**全部在 val 968 上选定**（见 `box_param_scan.py`），test 只做一次性报告。
+   阈值/边长/聚类半径**全部在 val 968 上选定**（见 `scan_box_params.py`），test 只做一次性报告。
 
 ---
 
@@ -246,7 +246,7 @@ python c10_viz.py --ids 6g2o,6jao,6qqw,6kqi,5zk7   #    口袋可视化 → resu
 - 端到端失败的两种模式很清楚：GNN 40 个里 **6 个盒子没罩住**、21 个罩住了但采样没找到；
   DSDP 是 4 / 20。**瓶颈主要不在"盒子大小"，而在"口袋选对没有"**。
 - 盒子参数**只在 val 上选**，test 只做一次性报告，未回流调参。
-- 工程坑（都写进了 `env_check.md` 第 6 节）：
+- 工程坑（都写进了 `docs/01_environment.md` 第 6 节）：
   1. 登录节点无 GPU，CUDA 二进制会 `Segmentation fault`，必须走调度器；
   2. DSDP 的 `--dataset_path` 会把目录下**每个子目录**都当成复合物 —— `site/out/log` 不能放进去；
   3. **DSSP 4.x 输出列位变了**（1–5 列是连续序号，6–10 列才是残基号），Biopython 1.83 会错位，
@@ -288,25 +288,25 @@ python c10_viz.py --ids 6g2o,6jao,6qqw,6kqi,5zk7   #    口袋可视化 → resu
 | `features.py` | 46 维残基特征（自写 DSSP 解析 + freesasa） |
 | `graph.py` | Cα ≤10 Å 建边、权重 1/d²、PyG `Data`；支持批量多进程 |
 | `model.py` | 4 层 GCN + 维度自检 |
-| `train.py` | 冒烟训练（30 图 / 2 epoch，验证管线） |
+| `train_smoke.py` | 冒烟训练（30 图 / 2 epoch，验证管线） |
 | `train_full.py` | 正式训练（早停 / 存 best / 日志 / 曲线） |
 | `predict.py` | 每残基概率 → CSV |
 | `residue_to_box.py` | 概率 → 聚类 → 36 Å 盒子（`box_min/box_max` + 诊断 json） |
 | `run_gnn_dsdp.py` | GNN → 盒子 → DSDP 对接 → RMSD 一条龙 |
-| `box_param_scan.py` | 盒子参数在 val 上的扫描（选阈值/边长/中心规则） |
-| `c2_baseline.py` | 原版 DSDP 3D-CNN 推理 + 体素→残基投影（基线） |
-| `c7b_eval.py` / `c7b_boxcheck.py` | 最终指标 / 盒子覆盖分析 |
-| `c10_e2e.py` | 40 蛋白两条管线端到端对比 |
-| `c10_dsdp_coverage.py` | 按 DSDP 源码复算其盒子覆盖率 |
-| `c10_dude.py` | DUD-E 102 补充评估 |
-| `c10_figures.py` / `c10_viz.py` | 表与图 / 口袋 3D 可视化 |
-| `*.sbatch` | slurm 模板（训练、C2、C9、C10） |
+| `scan_box_params.py` | 盒子参数在 val 上的扫描（选阈值/边长/中心规则） |
+| `baseline_dsdp_cnn.py` | 原版 DSDP 3D-CNN 推理 + 体素→残基投影（基线） |
+| `evaluate_model.py` / `analyze_box_coverage.py` | 最终指标 / 盒子覆盖分析 |
+| `benchmark_end2end.py` | 40 蛋白两条管线端到端对比 |
+| `analyze_dsdp_boxes.py` | 按 DSDP 源码复算其盒子覆盖率 |
+| `evaluate_dude.py` | DUD-E 102 补充评估 |
+| `make_figures.py` / `make_pocket_views.py` | 表与图 / 口袋 3D 可视化 |
+| `*.sbatch` | slurm 模板（训练 / 基线 / 端到端对比 / 冒烟） |
 | `best_model.pt` | **最终模型**（epoch 92，3,570 参数） |
-| `*_report.md` | 各阶段实验报告（env_check / c2 / c4 / c5c6 / c7a / c7b / c8c9 / c10） |
+| `docs/` | 各阶段实验报告：`01_environment` … `08_benchmark_and_figures`，`09_ppt_points` |
 | `results/` | 两张主表 CSV、4 张图、5 个蛋白可视化 |
-| `reports/` | 训练日志 json、阈值表、盒子扫描结果等 |
+| `reports/` | 训练日志 json、阈值表、盒子扫描、数据统计等 |
 
-> `*_report.md` 与 `reports/*.json` 里的路径是从原始运行记录里保留下来的占位符
+> `docs/` 与 `reports/*.json` 里的路径是从原始运行记录里保留下来的占位符
 > （`$GNNSITE_HOME` / `$DSDP_HOME` / `$SPLIT_DIR`），含义见 §3.4，不影响阅读结论。
 
 ---

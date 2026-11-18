@@ -233,7 +233,8 @@ def run_batch(args):
                                         for v in stats.values() if not v.get("cached")),
     }
     summary.update(scan)
-    with open(os.path.join(BASE, "graph_stat_%s.json" % args.split), "w") as fh:
+    os.makedirs(os.path.join(BASE, "reports"), exist_ok=True)
+    with open(os.path.join(BASE, "reports", "graph_stat_%s.json" % args.split), "w") as fh:
         json.dump(summary, fh, indent=1)
     if skipped:
         with open(os.path.join(BASE, "skipped_graph.txt"), "a") as fh:

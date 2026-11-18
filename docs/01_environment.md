@@ -100,7 +100,7 @@ Makefile 现状：三个 Makefile 有**历史本地改动**（git 中 `M`），`
 | test | 363 | **363** | **0** |
 | 索引缺 protein/ligand 的条目 | — | — | **0** |
 
-`gnn_site/skipped.txt`：**0 行**（即无任何 ID 需要走 RCSB 兜底）。
+`gnn_site/reports/skipped.txt`：**0 行**（即无任何 ID 需要走 RCSB 兜底）。
 
 ## 5. 冒烟结果（验收关键）
 
@@ -110,7 +110,7 @@ Makefile 现状：三个 Makefile 有**历史本地改动**（git 中 `M`），`
 
 ```bash
 cd $GNNSITE_HOME
-sbatch smoke_1a2b.sbatch     # -p gpu1 --gres=gpu:1 -t 40min
+sbatch smoke_dsdp.sbatch     # -p gpu1 --gres=gpu:1 -t 40min
 ```
 
 作业 159677 在 cn1（RTX 4090）成功，耗时约 **11 s**：
@@ -173,11 +173,11 @@ wc -l $SPLIT_DIR/timesplit_no_lig_overlap_train \
 python gnn_site/collect_structures.py
 
 # --- 4. 冒烟：1a2b blind docking（必须上 GPU 节点） ---
-cd gnn_site && sbatch smoke_1a2b.sbatch
+cd gnn_site && sbatch smoke_dsdp.sbatch
 # 产出 smoke_1a2b/out/1a2b_out.pdbqt
 
 # --- 5. 残基级 5 Å 标签（test 363 全量，约 12 s） ---
-python gnn_site/build_dataset.py --split test      # -> data/label/test/*.npz + label_stat_test.txt
+python gnn_site/build_dataset.py --split test      # -> data/label/test/*.npz + reports/label_stat_test.txt
 python gnn_site/build_dataset.py --split val --limit 10
 python gnn_site/build_dataset.py --split train --limit 3000   # 约 1~2 min
 ```

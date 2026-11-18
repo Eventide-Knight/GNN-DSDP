@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """train_full.py -- production training loop for the residue GCN (C7a).
 
-Differences from the C6 smoke script (train.py):
+Differences from the C6 smoke script (train_smoke.py):
   * trains on the whole 3,000-complex train split and evaluates on the whole
     968-complex val split (both loaded from data/graph/),
   * saves the best model by validation PR-AUC (weights + optimizer state +

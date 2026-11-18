@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""c10_dude.py -- optional bonus column: GNN residue-level AUC on DUD-E 102.
+"""evaluate_dude.py -- optional bonus column: GNN residue-level AUC on DUD-E 102.
 
 DUD-E complexes only ship pdbqt (no PDB ids), so each <id>_protein.pdbqt is
 cleaned into a standard PDB (element column restored, AD4 types dropped), then
@@ -8,11 +8,11 @@ probability, with 5 A labels from <id>_ligand.pdbqt.
 
 Smoke gate: aa2ar + abl1 must featurise and align before the full 102 run.
 
-Output: gnn_site/reports/c10_dude.json + gnn_site/results/table_dude102.csv
+Output: gnn_site/reports/eval_dude.json + gnn_site/results/table_dude102.csv
 
 Usage:
-  python c10_dude.py --workers 8
-  python c10_dude.py --ids aa2ar,abl1 --no-write     # smoke
+  python evaluate_dude.py --workers 8
+  python evaluate_dude.py --ids aa2ar,abl1 --no-write     # smoke
 """
 import argparse
 import csv
@@ -78,7 +78,7 @@ def main():
     ap.add_argument("--workers", type=int, default=8)
     ap.add_argument("--ids", default=None)
     ap.add_argument("--no-write", action="store_true")
-    ap.add_argument("--json", default=os.path.join(BASE, "reports", "c10_dude.json"))
+    ap.add_argument("--json", default=os.path.join(BASE, "reports", "eval_dude.json"))
     ap.add_argument("--csv", default=os.path.join(BASE, "results", "table_dude102.csv"))
     args = ap.parse_args()
 

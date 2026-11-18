@@ -10,7 +10,7 @@ For every complex of a given time split:
 
 Output: one .npz per complex in data/label/<split>/<id>.npz holding
   id, chain, resseq, icode, resname, ca (N,3), label (N,), mindist (N,)
-plus an aggregate label_stat.txt and skipped.txt.
+plus an aggregate reports/label_stat.txt and reports/skipped.txt.
 
 Usage:
   python build_dataset.py --split test --limit 5          # smoke
@@ -223,7 +223,7 @@ def write_stat(path, split, args, per_complex, skipped, elapsed):
     n_pos = sum(v["n_pos"] for v in per_complex.values())
     ligs = Counter(v["lig_kind"] for v in per_complex.values())
     lines = [
-        "# label_stat.txt -- %s" % time.strftime("%Y-%m-%d %H:%M:%S"),
+        "# reports/label_stat.txt -- %s" % time.strftime("%Y-%m-%d %H:%M:%S"),
         "split                 : %s" % split,
         "cutoff_angstrom       : %.2f" % args.cutoff,
         "complexes_done        : %d" % len(per_complex),
@@ -249,9 +249,9 @@ def write_stat(path, split, args, per_complex, skipped, elapsed):
 
 
 def write_summary(base, out_path):
-    """Aggregate every data/label/<split>/*.npz into one label_stat.txt."""
+    """Aggregate every data/label/<split>/*.npz into one reports/label_stat.txt."""
     import glob
-    lines = ["# label_stat.txt (aggregate over data/label/<split>/*.npz) -- %s"
+    lines = ["# reports/label_stat.txt (aggregate over data/label/<split>/*.npz) -- %s"
              % time.strftime("%Y-%m-%d %H:%M:%S"),
              "%-6s %10s %10s %10s %10s %8s" % (
                  "split", "proteins", "residues", "positive", "negative", "pos%")]
@@ -293,17 +293,17 @@ def main():
     ap.add_argument("--skipped", default=paths.SKIPPED)
     ap.add_argument("--overwrite", action="store_true")
     ap.add_argument("--summary", action="store_true",
-                    help="only aggregate existing data/label/*/*.npz into label_stat.txt")
+                    help="only aggregate existing data/label/*/*.npz into reports/label_stat.txt")
     args = ap.parse_args()
 
     base = paths.GNNSITE_HOME
     if args.summary:
-        write_summary(base, os.path.join(base, "label_stat.txt"))
+        write_summary(base, os.path.join(base, "reports/label_stat.txt"))
         return 0
     if args.out_dir is None:
         args.out_dir = os.path.join(base, "data", "label", args.split)
     if args.stat_file is None:
-        args.stat_file = os.path.join(base, "label_stat_%s.txt" % args.split)
+        args.stat_file = os.path.join(base, "reports", "label_stat_%s.txt" % args.split)
 
     with open(args.index) as fh:
         blob = json.load(fh)

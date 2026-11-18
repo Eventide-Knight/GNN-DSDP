@@ -122,13 +122,13 @@ python predict.py --protein /path/to/x_protein.pdb --model best_model.pt
 | `gnn_site/best_model.pt` | **最终模型**（epoch 92，含 optimizer state、val 指标、args） |
 | `gnn_site/predict.py` | 每残基概率预测（csv） |
 | `gnn_site/train_full.py` | 正式训练脚本（新增 `--ckpt-name`） |
-| `gnn_site/reports/c7b_train.json` | 100 epoch 完整日志 |
+| `gnn_site/reports/train_full.json` | 100 epoch 完整日志 |
 | `gnn_site/reports/c7b_curve.png` | loss + AUC 曲线 |
-| `gnn_site/reports/c7b_eval.json` | val/test 指标 + 阈值表 + top-k + 中心距离 |
-| `gnn_site/reports/c7b_threshold_val.csv` / `c7b_topk_val.csv` | 阈值/top-k 明细 |
-| `gnn_site/reports/c7b_boxcheck.json` | 盒子覆盖分析 |
+| `gnn_site/reports/eval_model.json` | val/test 指标 + 阈值表 + top-k + 中心距离 |
+| `gnn_site/reports/threshold_val.csv` / `topk_val.csv` | 阈值/top-k 明细 |
+| `gnn_site/reports/box_coverage.json` | 盒子覆盖分析 |
 | `gnn_site/reports/predict_6qqw.csv` / `.json` | predict.py 验证产物 |
-| `gnn_site/c2_report.md` / `c2_baseline.py` / `baseline_dsdp_residue.csv` | C2 基线（见那份报告） |
+| `docs/02_baseline_dsdp.md` / `baseline_dsdp_cnn.py` / `baseline_dsdp_residue.csv` | C2 基线（见那份报告） |
 
 ## 7. 与 C2 基线的对比（同一 test 363、同一 5 Å 标签）
 

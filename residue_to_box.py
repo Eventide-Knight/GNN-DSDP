@@ -4,7 +4,7 @@
 Flow (task book section 3 "residue -> box"):
   1. per-residue probability from the final GNN (reuses predict.py, no rewrite);
   2. select residues with p >= threshold (default 0.5, chosen on val by
-     box_param_scan.py); if fewer than 5 residues are selected, fall back to
+     scan_box_params.py); if fewer than 5 residues are selected, fall back to
      top-20; --topk overrides the threshold rule entirely;
   3. single-linkage clustering on CA at <= eps (default 8 A); the main pocket is
      the cluster with the largest (n_residues * sum(p));
@@ -33,7 +33,7 @@ import build_dataset as B  # noqa: E402
 import paths  # noqa: E402  (同目录：统一路径配置)
 
 BASE = paths.GNNSITE_HOME
-DEFAULT_THRESHOLD = 0.5      # chosen on val 968 (box_param_scan.py)
+DEFAULT_THRESHOLD = 0.5      # chosen on val 968 (scan_box_params.py)
 DEFAULT_BOX_SIZE = 36.0      # chosen on val 968
 DEFAULT_EPS = 8.0
 

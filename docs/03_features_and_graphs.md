@@ -12,7 +12,7 @@
 | `gnn_site/reports/features_6qqw.json` / `.log` / `.npz` | 6qqw 特征自检证据 |
 | `gnn_site/reports/graph_6qqw.json` / `graph_13gs.json` | 两个冒烟蛋白的图自检证据 |
 | `gnn_site/data/graph/train/*.pt` | **3000 个 train 复合物**的 `Data`（2885 + 115，0 skipped） |
-| `gnn_site/graph_stat_train.json` | 3000 个图数据的汇总统计 |
+| `gnn_site/reports/graph_stat_train.json` | 3000 个图数据的汇总统计 |
 
 ## 2. 特征定义（46 维，默认不含 pLDDT）
 
@@ -74,7 +74,7 @@
 
 ## 5. 3000 个 train 批量结果
 
-- `build_dataset.py --split train --limit 3000`：3000 个复合物，**0 skipped**，1,350,188 残基，58,463 正样本，**pos = 4.33%**，平均 450.1 残基/复合物，19.49 正样本/复合物（`label_stat_train.txt`）。
+- `build_dataset.py --split train --limit 3000`：3000 个复合物，**0 skipped**，1,350,188 残基，58,463 正样本，**pos = 4.33%**，平均 450.1 残基/复合物，19.49 正样本/复合物（`reports/label_stat_train.txt`）。
 - `graph.py --batch --split train --limit 3000 --workers 16`：**3000 个 `.pt`，0 skipped**，平均 450.06 节点 / 8312 条有向边，盘上 725 MB，纯计算 **233 s**（16 进程，登录节点 96 核）。
 - 图 id 集合与标签 id 集合**完全相等**（3000 = 3000）。
 

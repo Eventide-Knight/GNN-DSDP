@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""c7b_eval.py -- final evaluation of the full-data model.
+"""evaluate_model.py -- final evaluation of the full-data model.
 
   * val 968 and test 363: NLL loss, PR-AUC, ROC-AUC (test is evaluated ONCE,
     never used for model selection),
@@ -9,7 +9,7 @@
     centroid) and the true ligand heavy-atom centroid.
 
 Usage:
-  python c7b_eval.py --model gnn_site/best_model.pt --device cuda
+  python evaluate_model.py --model gnn_site/best_model.pt --device cuda
 """
 import argparse
 import csv
@@ -158,10 +158,10 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", default=os.path.join(BASE, "best_model.pt"))
     ap.add_argument("--device", default="cuda")
-    ap.add_argument("--json", default=os.path.join(BASE, "reports", "c7b_eval.json"))
+    ap.add_argument("--json", default=os.path.join(BASE, "reports", "eval_model.json"))
     ap.add_argument("--csv-threshold",
-                    default=os.path.join(BASE, "reports", "c7b_threshold_val.csv"))
-    ap.add_argument("--csv-topk", default=os.path.join(BASE, "reports", "c7b_topk_val.csv"))
+                    default=os.path.join(BASE, "reports", "threshold_val.csv"))
+    ap.add_argument("--csv-topk", default=os.path.join(BASE, "reports", "topk_val.csv"))
     args = ap.parse_args()
 
     device = torch.device(args.device if (args.device == "cpu" or torch.cuda.is_available())
